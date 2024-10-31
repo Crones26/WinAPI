@@ -107,7 +107,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
             // Определяем, какое поле получило фокус, и устанавливаем соответствующий текст-приглашение
             if (hEdit == hEditLogin) szDefaultText = szDefaultTextLogin;
-            else if (hEdit == hEditPassword) szDefaultText = szDefaultTextPassword;
+            if (hEdit == hEditPassword) szDefaultText = szDefaultTextPassword;
             if (szDefaultText)
             {
                 CHAR szText[256] = {};
@@ -128,7 +128,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
             // Определяем, какое поле теряет фокус и устанавливаем соответствующий текст-приглашение
             if (hEdit == hEditLogin) szDefaultText = szDefaultTextLogin;
-            else if (hEdit == hEditPassword) szDefaultText = szDefaultTextPassword;
+            if (hEdit == hEditPassword) szDefaultText = szDefaultTextPassword;
             if (szDefaultText)
             {
                 CHAR szText[256] = {};
