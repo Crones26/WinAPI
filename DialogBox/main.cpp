@@ -1,12 +1,12 @@
-#include<Windows.h>
+п»ї#include<Windows.h>
 #include"resource.h"
 
 //#define LOGIN_PASS_1
 
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-CONST CHAR* szDefaultTextLogin = "Введите имя пользователя";
-CONST CHAR* szDefaultTextPassword = "Введите пароль";
+CONST CHAR* szDefaultTextLogin = "Р’РІРµРґРёС‚Рµ РёРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ";
+CONST CHAR* szDefaultTextPassword = "Р’РІРµРґРёС‚Рµ РїР°СЂРѕР»СЊ";
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -16,8 +16,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    static HWND hEditLogin;    // Дескриптор поля 'Login'
-    static HWND hEditPassword; // Дескриптор поля 'Password'
+    static HWND hEditLogin;    // Р”РµСЃРєСЂРёРїС‚РѕСЂ РїРѕР»СЏ 'Login'
+    static HWND hEditPassword; // Р”РµСЃРєСЂРёРїС‚РѕСЂ РїРѕР»СЏ 'Password'
 
     switch (uMsg)
     {
@@ -26,7 +26,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
         SendMessage(hwnd, WM_SETICON, 0, (LPARAM)hIcon);
 
-        // Получаем дескрипторы для полей 'Login' и 'Password' и устанавливаем текст-приглашение
+        // РџРѕР»СѓС‡Р°РµРј РґРµСЃРєСЂРёРїС‚РѕСЂС‹ РґР»СЏ РїРѕР»РµР№ 'Login' Рё 'Password' Рё СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј С‚РµРєСЃС‚-РїСЂРёРіР»Р°С€РµРЅРёРµ
         hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
         SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)szDefaultTextLogin);
 
@@ -41,8 +41,8 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case IDC_BUTTON_COPY:
         {
             HWND hEditPassword = GetDlgItem(hwnd, IDC_EDIT_PASSWORD);
-            //Функция GetDlgItem() возвращает HWND дочернего элемента окна по его Resource ID
-            //HWND - Handle to Window (Дескриптор окна) - это число, при помощи которого можно обратиться к окну.
+            //Р¤СѓРЅРєС†РёСЏ GetDlgItem() РІРѕР·РІСЂР°С‰Р°РµС‚ HWND РґРѕС‡РµСЂРЅРµРіРѕ СЌР»РµРјРµРЅС‚Р° РѕРєРЅР° РїРѕ РµРіРѕ Resource ID
+            //HWND - Handle to Window (Р”РµСЃРєСЂРёРїС‚РѕСЂ РѕРєРЅР°) - СЌС‚Рѕ С‡РёСЃР»Рѕ, РїСЂРё РїРѕРјРѕС‰Рё РєРѕС‚РѕСЂРѕРіРѕ РјРѕР¶РЅРѕ РѕР±СЂР°С‚РёС‚СЊСЃСЏ Рє РѕРєРЅСѓ.
             CONST INT SIZE = 256;
             CHAR sz_buffer[SIZE] = {};
             SendMessage(hEditLogin, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
@@ -51,7 +51,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         break;
 
         case IDOK:
-            MessageBox(hwnd, "Была нажата кнопка ОК!", "Info", MB_OK | MB_ICONINFORMATION);
+            MessageBox(hwnd, "Р‘С‹Р»Р° РЅР°Р¶Р°С‚Р° РєРЅРѕРїРєР° РћРљ!", "Info", MB_OK | MB_ICONINFORMATION);
             EndDialog(hwnd, 0);
             break;
 
@@ -60,17 +60,17 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             break;
         }
 #ifdef LOGIN_PASS_1
-        // Обработка получения и потери фокуса для полей 'Login' и 'Password'
+        // РћР±СЂР°Р±РѕС‚РєР° РїРѕР»СѓС‡РµРЅРёСЏ Рё РїРѕС‚РµСЂРё С„РѕРєСѓСЃР° РґР»СЏ РїРѕР»РµР№ 'Login' Рё 'Password'
         if (HIWORD(wParam) == EN_SETFOCUS)
         {
             if ((HWND)lParam == hEditLogin)
             {
-                // Очищаем поле 'Login' при фокусировке
+                // РћС‡РёС‰Р°РµРј РїРѕР»Рµ 'Login' РїСЂРё С„РѕРєСѓСЃРёСЂРѕРІРєРµ
                 SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)"");
             }
             else if ((HWND)lParam == hEditPassword)
             {
-                // Очищаем поле 'Password' при фокусировке
+                // РћС‡РёС‰Р°РµРј РїРѕР»Рµ 'Password' РїСЂРё С„РѕРєСѓСЃРёСЂРѕРІРєРµ
                 SendMessage(hEditPassword, WM_SETTEXT, 0, (LPARAM)"");
             }
         }
@@ -78,7 +78,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             if ((HWND)lParam == hEditLogin)
             {
-                // Если поле 'Login' пустое при потере фокуса, устанавливаем текст-приглашение
+                // Р•СЃР»Рё РїРѕР»Рµ 'Login' РїСѓСЃС‚РѕРµ РїСЂРё РїРѕС‚РµСЂРµ С„РѕРєСѓСЃР°, СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј С‚РµРєСЃС‚-РїСЂРёРіР»Р°С€РµРЅРёРµ
                 CHAR szText[256] = {};
                 SendMessage(hEditLogin, WM_GETTEXT, 256, (LPARAM)szText);
                 if (strlen(szText) == 0)
@@ -88,7 +88,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
             else if ((HWND)lParam == hEditPassword)
             {
-                // Если поле 'Password' пустое при потере фокуса, устанавливаем текст-приглашение
+                // Р•СЃР»Рё РїРѕР»Рµ 'Password' РїСѓСЃС‚РѕРµ РїСЂРё РїРѕС‚РµСЂРµ С„РѕРєСѓСЃР°, СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј С‚РµРєСЃС‚-РїСЂРёРіР»Р°С€РµРЅРёРµ
                 CHAR szText[256] = {};
                 SendMessage(hEditPassword, WM_GETTEXT, 256, (LPARAM)szText);
                 if (strlen(szText) == 0)
@@ -105,7 +105,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             HWND hEdit = (HWND)lParam;
             const CHAR* szDefaultText = nullptr;
 
-            // Определяем, какое поле получило фокус, и устанавливаем соответствующий текст-приглашение
+            // РћРїСЂРµРґРµР»СЏРµРј, РєР°РєРѕРµ РїРѕР»Рµ РїРѕР»СѓС‡РёР»Рѕ С„РѕРєСѓСЃ, Рё СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёР№ С‚РµРєСЃС‚-РїСЂРёРіР»Р°С€РµРЅРёРµ
             if (hEdit == hEditLogin) szDefaultText = szDefaultTextLogin;
             else if (hEdit == hEditPassword) szDefaultText = szDefaultTextPassword;
             if (szDefaultText)
@@ -113,7 +113,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 CHAR szText[256] = {};
                 SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)szText);
 
-                // Очищаем поле только если оно содержит текст-приглашение
+                // РћС‡РёС‰Р°РµРј РїРѕР»Рµ С‚РѕР»СЊРєРѕ РµСЃР»Рё РѕРЅРѕ СЃРѕРґРµСЂР¶РёС‚ С‚РµРєСЃС‚-РїСЂРёРіР»Р°С€РµРЅРёРµ
                 if (strcmp(szText, szDefaultText) == 0)
                 {
                     SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"");
@@ -126,7 +126,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             HWND hEdit = (HWND)lParam;
             const CHAR* szDefaultText = nullptr;
 
-            // Определяем, какое поле теряет фокус и устанавливаем соответствующий текст-приглашение
+            // РћРїСЂРµРґРµР»СЏРµРј, РєР°РєРѕРµ РїРѕР»Рµ С‚РµСЂСЏРµС‚ С„РѕРєСѓСЃ Рё СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёР№ С‚РµРєСЃС‚-РїСЂРёРіР»Р°С€РµРЅРёРµ
             if (hEdit == hEditLogin) szDefaultText = szDefaultTextLogin;
             else if (hEdit == hEditPassword) szDefaultText = szDefaultTextPassword;
             if (szDefaultText)
@@ -134,7 +134,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 CHAR szText[256] = {};
                 SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)szText);
 
-                // Устанавливаем текст-приглашение, если поле пустое
+                // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј С‚РµРєСЃС‚-РїСЂРёРіР»Р°С€РµРЅРёРµ, РµСЃР»Рё РїРѕР»Рµ РїСѓСЃС‚РѕРµ
                 if (strlen(szText) == 0)
                 {
                     SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)szDefaultText);
