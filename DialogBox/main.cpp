@@ -125,7 +125,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         break;
 #endif // LOGIN_PASS_1
 
-        // Для обработки фокуса на полях 'Login' и 'Password'
+        // Для обработки фокуса 'Login' и 'Password'
         if (HIWORD(wParam) == EN_SETFOCUS || HIWORD(wParam) == EN_KILLFOCUS)
         {
             HWND hEdit = (HWND)lParam;
