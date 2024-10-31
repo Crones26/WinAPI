@@ -113,7 +113,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 CHAR szText[256] = {};
                 SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)szText);
 
-                // Очищаем поле только если оно содержит текст-приглашение
+                // Очищаем поле только если окно содержит текст-приглашение
                 if (strcmp(szText, szDefaultText) == 0)
                 {
                     SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"");
