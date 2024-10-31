@@ -68,13 +68,13 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 // Очищаем поле 'Login' при фокусировке
                 SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)"");
             }
-            else if ((HWND)lParam == hEditPassword)
+            if ((HWND)lParam == hEditPassword)
             {
                 // Очищаем поле 'Password' при фокусировке
                 SendMessage(hEditPassword, WM_SETTEXT, 0, (LPARAM)"");
             }
         }
-        else if (HIWORD(wParam) == EN_KILLFOCUS)
+        if (HIWORD(wParam) == EN_KILLFOCUS)
         {
             if ((HWND)lParam == hEditLogin)
             {
@@ -86,7 +86,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                     SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)szDefaultTextLogin);
                 }
             }
-            else if ((HWND)lParam == hEditPassword)
+            if ((HWND)lParam == hEditPassword)
             {
                 // Если поле 'Password' пустое при потере фокуса, устанавливаем текст-приглашение
                 CHAR szText[256] = {};
@@ -121,7 +121,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
         }
 
-        else if (HIWORD(wParam) == EN_KILLFOCUS)
+        if (HIWORD(wParam) == EN_KILLFOCUS)
         {
             HWND hEdit = (HWND)lParam;
             const CHAR* szDefaultText = nullptr;
