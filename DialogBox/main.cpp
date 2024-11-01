@@ -47,10 +47,10 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             break;
         case IDC_BUTTON_COPY:
         {
-            CONST INT SIZE = 256;
-            CHAR sz_buffer[SIZE] = {};
             HWND hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
             HWND hEditPassword = GetDlgItem(hwnd, IDC_EDIT_PASSWORD);
+            CONST INT SIZE = 256;
+            CHAR sz_buffer[SIZE] = {};
 
             SendMessage(hEditLogin, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
 
@@ -58,13 +58,15 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             if (strcmp(sz_buffer, g_sz_LOGIN_INVITATION) != 0)
             {
                 SendMessage(hEditPassword, WM_SETTEXT, 0, (LPARAM)sz_buffer);
-                SendMessage(hEditPassword, EM_SETPASSWORDCHAR, '*', 0); // Скрываем пароль звездочками после копирования
-                InvalidateRect(hEditPassword, NULL, TRUE);
+
+                // Проверяем состояние флажка "Показать пароль"
+                showPassword = IsDlgButtonChecked(hwnd, IDC_CHEK_SHOW_PASSWORD);
+                TogglePasswordVisibility(hwnd, showPassword); // Обновляем видимость пароля
             }
         }
         break;
         case IDC_CHEK_SHOW_PASSWORD:
-            // Переключаем видимость пароля при нажатии
+            // Переключаем видимость пароля при нажатии на флажок
             showPassword = !showPassword;
             TogglePasswordVisibility(hwnd, showPassword);
             break;
@@ -91,19 +93,28 @@ void HandleEditFocus(HWND hwnd, int controlId, const CHAR* invitationText, BOOL 
     HWND hEdit = GetDlgItem(hwnd, controlId);
     SendMessage(hEdit, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
 
+    // Проверяем, если поле в фокусе и содержит ли текст приглашения
     if (GetFocus() == hEdit && strcmp(sz_buffer, invitationText) == 0)
     {
         SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)"");
-        // Устанавливаем ES_PASSWORD для поля пароля, когда пользователь начинает ввод
+
+        // Если это поле пароля и флажок "Показать пароль" не установлен, применяем маскирование
         if (isPasswordField)
-            SendMessage(hEdit, EM_SETPASSWORDCHAR, '*', 0);
+        {
+            BOOL showPassword = IsDlgButtonChecked(hwnd, IDC_CHEK_SHOW_PASSWORD);
+            SendMessage(hEdit, EM_SETPASSWORDCHAR, showPassword ? 0 : '*', 0);
+        }
     }
+    // Если поле потеряло фокус и текст пустой, устанавливаем текст приглашения
     else if (GetFocus() != hEdit && strcmp(sz_buffer, "") == 0)
     {
         SendMessage(hEdit, WM_SETTEXT, 0, (LPARAM)invitationText);
-        // Снимаем ES_PASSWORD, если в поле пароля снова появляется текст приглашения
+
+        // Снимаем маскирование, если в поле пароля снова появляется текст приглашения
         if (isPasswordField)
+        {
             SendMessage(hEdit, EM_SETPASSWORDCHAR, 0, 0);
+        }
     }
 
     InvalidateRect(hEdit, NULL, TRUE);
@@ -118,17 +129,16 @@ void TogglePasswordVisibility(HWND hwnd, BOOL showPassword)
     // Получаем текст из поля пароля
     SendMessage(hEditPassword, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
 
-    // Проверяем, что текст в поле пароля не является приглашением
-    if (strcmp(sz_buffer, g_sz_PASSWORD_INVITATION) == 0)
+    // Проверяем, чтобы не изменять видимость, если в поле находится текст приглашения
+    if (strcmp(sz_buffer, g_sz_PASSWORD_INVITATION) != 0)
     {
-        // Если это приглашение, не меняем видимость пароля и оставляем поле как есть
-        SendMessage(hEditPassword, EM_SETPASSWORDCHAR, 0, 0);
+        // Если это не текст приглашения, переключаем видимость пароля
+        SendMessage(hEditPassword, EM_SETPASSWORDCHAR, showPassword ? 0 : '*', 0);
     }
     else
     {
-        // Если это не приглашение, переключаем видимость
-        SendMessage(hEditPassword, EM_SETPASSWORDCHAR, showPassword ? 0 : '*', 0);
+        // Если это текст приглашения, снимаем символ маскирования
+        SendMessage(hEditPassword, EM_SETPASSWORDCHAR, 0, 0);
     }
-    // Обновляем поле пароля для применения изменений
     InvalidateRect(hEditPassword, NULL, TRUE);
 }
