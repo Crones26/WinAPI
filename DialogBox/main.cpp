@@ -49,6 +49,8 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             HWND hEditLogin = GetDlgItem(hwnd, IDC_EDIT_LOGIN);
             HWND hEditPassword = GetDlgItem(hwnd, IDC_EDIT_PASSWORD);
+            //Фкнкция GetDlgItem() возвращает HWND дочернего элемента окна по его ResourceID.
+            //HWND - Handler to Window (Дескриптор окна) - это число, при помощи которого можно обратиться к окну.
             CONST INT SIZE = 256;
             CHAR sz_buffer[SIZE] = {};
 
