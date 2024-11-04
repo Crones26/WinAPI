@@ -68,14 +68,17 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case IDC_DELETE_BUTTON:  // Обработка кнопки "Удалить"
         {
             HWND hList = GetDlgItem(hwnd, IDC_LISTBOX);
-            INT i = SendMessage(hList, LB_GETCURSEL, 0, 0); // Получение индекса выбранного элемента
-            if (i != LB_ERR)
+            INT i = SendMessage(hList, LB_GETCURSEL, 0, 0);                   // Получаем индекс выбранного элемента
+            CHAR sz_buffer[256] = {};
+
+            if (SendMessage(hList, LB_GETTEXT, i, (LPARAM)sz_buffer) > 0)     // Проверка успешного получения текста
             {
-                SendMessage(hList, LB_DELETESTRING, i, 0); // Удаление выбранного элемента из ListBox
+                SendMessage(hList, LB_DELETESTRING, i, 0);                    // Удаление выбранного элемента
+                MessageBox(hwnd, "Элемент удален.", "Успех", MB_OK | MB_ICONINFORMATION); // Сообщение об успешном удалении
             }
             else
             {
-                MessageBox(hwnd, "Элемент не выбран.", "Ошибка", MB_OK | MB_ICONERROR);
+                MessageBox(hwnd, "Элемент не выбран.", "Ошибка", MB_OK | MB_ICONERROR);   // Сообщение об ошибке, если элемент не выбран
             }
         }
         break;
