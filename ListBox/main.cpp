@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+п»ї#define _CRT_SECURE_NO_WARNINGS
 #include <Windows.h>
 #include <stdio.h>
 #include "resource.h"
@@ -28,54 +28,54 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)g_VALUES[i]);
         }
-        SendMessage(hList, LB_SETCURSEL, 0, 0); // Установить первый элемент как выбранный
+        SendMessage(hList, LB_SETCURSEL, 0, 0); // РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РїРµСЂРІС‹Р№ СЌР»РµРјРµРЅС‚ РєР°Рє РІС‹Р±СЂР°РЅРЅС‹Р№
     }
     break;
 
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
-        case IDOK:  // Обработка нажатия кнопки OK
+        case IDOK:  // РћР±СЂР°Р±РѕС‚РєР° РЅР°Р¶Р°С‚РёСЏ РєРЅРѕРїРєРё OK
         {
             CHAR sz_buffer[256] = {};
             HWND hList = GetDlgItem(hwnd, IDC_LISTBOX);
-            INT i = SendMessage(hList, LB_GETCURSEL, 0, 0); // Получение индекса выбранного элемента
+            INT i = SendMessage(hList, LB_GETCURSEL, 0, 0); // РџРѕР»СѓС‡РµРЅРёРµ РёРЅРґРµРєСЃР° РІС‹Р±СЂР°РЅРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
 
             if (SendMessage(hList, LB_GETTEXT, i, (LPARAM)sz_buffer) > 0)
             {
                 CHAR sz_message[256] = {};
-                sprintf(sz_message, "Вы выбрали пункт №%i со значением \"%s\".", i, sz_buffer);
+                sprintf(sz_message, "Р’С‹ РІС‹Р±СЂР°Р»Рё РїСѓРЅРєС‚ в„–%i СЃРѕ Р·РЅР°С‡РµРЅРёРµРј \"%s\".", i, sz_buffer);
                 MessageBox(hwnd, sz_message, "Info", MB_OK | MB_ICONINFORMATION);
             }
             else
             {
-                MessageBox(hwnd, "Нет выбранного элемента.", "Ошибка", MB_OK | MB_ICONERROR);
+                MessageBox(hwnd, "РќРµС‚ РІС‹Р±СЂР°РЅРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°.", "РћС€РёР±РєР°", MB_OK | MB_ICONERROR);
             }
         }
         break;
 
-        case IDC_ADD_BUTTON:  // Обработка кнопки "Добавить"
+        case IDC_ADD_BUTTON:  // РћР±СЂР°Р±РѕС‚РєР° РєРЅРѕРїРєРё "Р”РѕР±Р°РІРёС‚СЊ"
         {
             CHAR sz_input[256] = {};
             if (DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ADDITEM), hwnd, AddItemProc, (LPARAM)sz_input) == IDOK)
             {
                 HWND hList = GetDlgItem(hwnd, IDC_LISTBOX);
-                SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)sz_input); // Добавление введенного текста в ListBox
+                SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)sz_input); // Р”РѕР±Р°РІР»РµРЅРёРµ РІРІРµРґРµРЅРЅРѕРіРѕ С‚РµРєСЃС‚Р° РІ ListBox
             }
         }
         break;
 
-        case IDC_DELETE_BUTTON:  // Обработка кнопки "Удалить"
+        case IDC_DELETE_BUTTON:  // РћР±СЂР°Р±РѕС‚РєР° РєРЅРѕРїРєРё "РЈРґР°Р»РёС‚СЊ"
         {
             HWND hList = GetDlgItem(hwnd, IDC_LISTBOX);
-            INT i = SendMessage(hList, LB_GETCURSEL, 0, 0); // Получение индекса выбранного элемента
+            INT i = SendMessage(hList, LB_GETCURSEL, 0, 0); // РџРѕР»СѓС‡РµРЅРёРµ РёРЅРґРµРєСЃР° РІС‹Р±СЂР°РЅРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
             if (i != LB_ERR)
             {
-                SendMessage(hList, LB_DELETESTRING, i, 0); // Удаление выбранного элемента из ListBox
+                SendMessage(hList, LB_DELETESTRING, i, 0); // РЈРґР°Р»РµРЅРёРµ РІС‹Р±СЂР°РЅРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р° РёР· ListBox
             }
             else
             {
-                MessageBox(hwnd, "Элемент не выбран.", "Ошибка", MB_OK | MB_ICONERROR);
+                MessageBox(hwnd, "Р­Р»РµРјРµРЅС‚ РЅРµ РІС‹Р±СЂР°РЅ.", "РћС€РёР±РєР°", MB_OK | MB_ICONERROR);
             }
         }
         break;
@@ -108,17 +108,17 @@ BOOL CALLBACK AddItemProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
         case IDOK:
         {
-            // Получаем текст из поля ввода
+            // РџРѕР»СѓС‡Р°РµРј С‚РµРєСЃС‚ РёР· РїРѕР»СЏ РІРІРѕРґР°
             GetDlgItemText(hwnd, IDC_EDIT1, sz_input, 256);
 
-            // Проверяем, пустая ли строка
+            // РџСЂРѕРІРµСЂСЏРµРј, РїСѓСЃС‚Р°СЏ Р»Рё СЃС‚СЂРѕРєР°
             if (strlen(sz_input) == 0)
             {
-                MessageBox(hwnd, "Введите текст для добавления.", "Ошибка", MB_OK | MB_ICONERROR);
-                return TRUE;  // Остаемся в диалоговом окне
+                MessageBox(hwnd, "Р’РІРµРґРёС‚Рµ С‚РµРєСЃС‚ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ.", "РћС€РёР±РєР°", MB_OK | MB_ICONERROR);
+                return TRUE;  // РћСЃС‚Р°РµРјСЃСЏ РІ РґРёР°Р»РѕРіРѕРІРѕРј РѕРєРЅРµ
             }
 
-            EndDialog(hwnd, IDOK);  // Закрываем диалог только если строка не пуста
+            EndDialog(hwnd, IDOK);  // Р—Р°РєСЂС‹РІР°РµРј РґРёР°Р»РѕРі С‚РѕР»СЊРєРѕ РµСЃР»Рё СЃС‚СЂРѕРєР° РЅРµ РїСѓСЃС‚Р°
             return TRUE;
         }
         
