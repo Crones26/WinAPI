@@ -69,9 +69,9 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		//case IDC_DELETE_BUTTON:  // Обработка кнопки "Удалить"
 		//{
+		//    CHAR sz_buffer[256] = {};
 		//    HWND hList = GetDlgItem(hwnd, IDC_LISTBOX);
 		//    INT i = SendMessage(hList, LB_GETCURSEL, 0, 0);                   // Получаем индекс выбранного элемента
-		//    CHAR sz_buffer[256] = {};
 
 		//    if (SendMessage(hList, LB_GETTEXT, i, (LPARAM)sz_buffer) > 0)     // Проверка успешного получения текста
 		//    {
