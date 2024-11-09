@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ListBox", "ListBox\ListBox.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ListBox_2", "ListBox_2\ListBox_2.vcxproj", "{0830B543-F5DD-4FC7-B5A7-199F5BFA6E17}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainWindow", "MainWindow\MainWindow.vcxproj", "{EDC31480-23BE-4B5B-959F-430F0C8307DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +63,14 @@ Global
 		{0830B543-F5DD-4FC7-B5A7-199F5BFA6E17}.Release|x64.Build.0 = Release|x64
 		{0830B543-F5DD-4FC7-B5A7-199F5BFA6E17}.Release|x86.ActiveCfg = Release|Win32
 		{0830B543-F5DD-4FC7-B5A7-199F5BFA6E17}.Release|x86.Build.0 = Release|Win32
+		{EDC31480-23BE-4B5B-959F-430F0C8307DA}.Debug|x64.ActiveCfg = Debug|x64
+		{EDC31480-23BE-4B5B-959F-430F0C8307DA}.Debug|x64.Build.0 = Debug|x64
+		{EDC31480-23BE-4B5B-959F-430F0C8307DA}.Debug|x86.ActiveCfg = Debug|Win32
+		{EDC31480-23BE-4B5B-959F-430F0C8307DA}.Debug|x86.Build.0 = Debug|Win32
+		{EDC31480-23BE-4B5B-959F-430F0C8307DA}.Release|x64.ActiveCfg = Release|x64
+		{EDC31480-23BE-4B5B-959F-430F0C8307DA}.Release|x64.Build.0 = Release|x64
+		{EDC31480-23BE-4B5B-959F-430F0C8307DA}.Release|x86.ActiveCfg = Release|Win32
+		{EDC31480-23BE-4B5B-959F-430F0C8307DA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
