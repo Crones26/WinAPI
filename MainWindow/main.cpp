@@ -44,16 +44,16 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
     int posY = (screenHeight - windowHeight) / 2;
 
     // 2) Создание окна:
-    HWND hwnd = CreateWindowExA
+    HWND hwnd = CreateWindowEx
     (
-        0,                      // ExStyles
-        g_sz_MY_WINDOW_CLASS,    // Class name
-        "My Window",             // Initial window title
-        WS_OVERLAPPEDWINDOW,     // Window style
-        posX, posY,              // Window position
-        windowWidth, windowHeight, // Window size
-        NULL,                    // Parent Window
-        NULL,                    // Main menu ResourceID
+        NULL,		//ExStyles
+        g_sz_MY_WINDOW_CLASS,         //Class name
+        g_sz_MY_WINDOW_CLASS,         //Window title
+        WS_OVERLAPPEDWINDOW,          //Window style
+        CW_USEDEFAULT, CW_USEDEFAULT, //Window position
+        CW_USEDEFAULT, CW_USEDEFAULT, //Window size
+        NULL,                         //Parent Window
+        NULL,                         //Main menu ResourceID for MainWindow or ResourceID for ChildWindow
         hInstance,
         NULL
     );
