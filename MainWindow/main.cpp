@@ -101,7 +101,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
         // Обновляем заголовок окна с новыми размерами
         std::ostringstream title;
-        title << "My Window - Size: (" "Width = " << width << " X " "Height =" << height << ")";
+        title << "My Window - Size: (" "Width =" << width << " X " "Height =" << height << ")";
         SetWindowTextA(hwnd, title.str().c_str());
         break;
     }
