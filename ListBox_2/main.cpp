@@ -25,13 +25,49 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//GetModuleHandle(NULL); возвращает hInstance нашей программы.
 		SendMessage(hwnd, WM_SETICON, 0, (LPARAM)hIcon);
 
+		// Устанавливаем окно по центру экрана с размером 75% от экрана
+		RECT rcScreen, rcWindow;
+		GetClientRect(GetDesktopWindow(), &rcScreen);
+		GetWindowRect(hwnd, &rcWindow);
+
+		int width = rcScreen.right * 3 / 4;
+		int height = rcScreen.bottom * 3 / 4;
+		int x = (rcScreen.right - width) / 2;
+		int y = (rcScreen.bottom - height) / 2;
+
+		SetWindowPos(hwnd, NULL, x, y, width, height, SWP_NOZORDER);
+
 		HWND hList = GetDlgItem(hwnd, IDC_LIST1);
 		for (int i = 0; i < sizeof(g_VALUES) / sizeof(g_VALUES[0]); i++)
 		{
 			SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)g_VALUES[i]);
 		}
+
 	}
 	break;
+
+	case WM_MOVE:
+	{
+		// Обновление заголовка при перемещении окна
+		RECT rect;
+		GetWindowRect(hwnd, &rect);
+		CHAR szTitle[100];
+		sprintf(szTitle, "ListBox (X: %d, Y: %d)", rect.left, rect.top);
+		SetWindowText(hwnd, szTitle);
+	}
+	break;
+
+	case WM_SIZE:
+	{
+		// Обновление заголовка при изменении размера окна
+		int width = LOWORD(lParam);
+		int height = HIWORD(lParam);
+		CHAR szTitle[100];
+		sprintf(szTitle, "ListBox (Width: %d, Height: %d)", width, height);
+		SetWindowText(hwnd, szTitle);
+	}
+	break;
+
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
@@ -48,9 +84,9 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 		case IDC_BUTTON_DELETE:
 		{
-			HWND hLitBox = GetDlgItem(hwnd, IDC_LIST1);
-			INT i = SendMessage(hLitBox, LB_GETCURSEL, 0, 0);
-			SendMessage(hLitBox, LB_DELETESTRING, i, 0);
+			HWND hListBox = GetDlgItem(hwnd, IDC_LIST1);
+			INT i = SendMessage(hListBox, LB_GETCURSEL, 0, 0);
+			SendMessage(hListBox, LB_DELETESTRING, i, 0);
 		}
 		break;
 		case IDOK:
@@ -67,15 +103,6 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			MessageBox(hwnd, sz_message, "Info", MB_OK | MB_ICONINFORMATION);
 		}
 		break;
-		case WM_KEYDOWN:
-			MessageBox(hwnd, "DELETE pressed", "Info", MB_OK | MB_ICONINFORMATION);
-			switch (wParam)
-			{
-			case VK_DELETE:
-				SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_DELETE), (LPARAM)GetDlgItem(hwnd, IDC_LIST1));
-				break;
-			}
-			break;
 		case IDCANCEL:
 			EndDialog(hwnd, 0);
 			break;
@@ -87,6 +114,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	return FALSE;
 }
+
 BOOL CALLBACK DlgProcAddItem(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
@@ -103,7 +131,7 @@ BOOL CALLBACK DlgProcAddItem(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			CHAR sz_buffer[SIZE]{};
 			HWND hEditAdd = GetDlgItem(hwnd, IDC_EDIT_ADD);
 			SendMessage(hEditAdd, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
-			if (strlen(sz_buffer) == 0)break;
+			if (strlen(sz_buffer) == 0) break;
 
 			HWND hList = GetDlgItem(GetParent(hwnd), IDC_LIST1);
 			//GetParent(hwnd); возвращает родительское окно (HWND родителького окна) для указанного окна.
@@ -113,14 +141,11 @@ BOOL CALLBACK DlgProcAddItem(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 			else
 			{
-				INT result = MessageBox
-				(
-					hwnd,
+				INT result = MessageBox(hwnd,
 					"Такое вхождение уже есть в списке, хотите ввести другое значение?",
 					"Info",
-					MB_YESNO | MB_ICONQUESTION
-				);
-				if (result == IDYES)break;
+					MB_YESNO | MB_ICONQUESTION);
+				if (result == IDYES) break;
 			}
 		}
 		case IDCANCEL:
@@ -134,6 +159,7 @@ BOOL CALLBACK DlgProcAddItem(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	return FALSE;
 }
+
 BOOL CALLBACK DlgProcEditItem(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
@@ -166,11 +192,14 @@ BOOL CALLBACK DlgProcEditItem(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			SendMessage(hListBox, LB_DELETESTRING, i, 0);
 			SendMessage(hListBox, LB_INSERTSTRING, i, (LPARAM)sz_buffer);
 		}
-		case IDCANCEL:EndDialog(hwnd, 0); break;
+		case IDCANCEL:
+			EndDialog(hwnd, 0);
+			break;
 		}
 		break;
 	case WM_CLOSE:
 		EndDialog(hwnd, 0);
+		break;
 	}
 	return FALSE;
 }
