@@ -1,14 +1,14 @@
-#include<Windows.h>
+п»ї#include<Windows.h>
 #include <string>
 #include <sstream>
 
-CONST CHAR g_sz_MY_WINDOW_CLASS[] = "My Window"; // Имя класса окна
+CONST CHAR g_sz_MY_WINDOW_CLASS[] = "My Window"; // РРјСЏ РєР»Р°СЃСЃР° РѕРєРЅР°
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
-    // 1) Регистрация класса окна:
+    // 1) Р РµРіРёСЃС‚СЂР°С†РёСЏ РєР»Р°СЃСЃР° РѕРєРЅР°:
     WNDCLASSEX wc;
     ZeroMemory(&wc, sizeof(wc));
 
@@ -33,17 +33,17 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
         return 0;
     }
 
-    // Получаем размеры экрана
+    // РџРѕР»СѓС‡Р°РµРј СЂР°Р·РјРµСЂС‹ СЌРєСЂР°РЅР°
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    // Вычисляем размеры окна для 75% экрана и центрируем его
+    // Р’С‹С‡РёСЃР»СЏРµРј СЂР°Р·РјРµСЂС‹ РѕРєРЅР° РґР»СЏ 75% СЌРєСЂР°РЅР° Рё С†РµРЅС‚СЂРёСЂСѓРµРј РµРіРѕ
     int windowWidth = screenWidth * 3 / 4;
     int windowHeight = screenHeight * 3 / 4;
     int posX = (screenWidth - windowWidth) / 2;
     int posY = (screenHeight - windowHeight) / 2;
 
-    // 2) Создание окна:
+    // 2) РЎРѕР·РґР°РЅРёРµ РѕРєРЅР°:
     HWND hwnd = CreateWindowExA
     (
         0,                      // ExStyles
@@ -58,12 +58,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
         NULL
     );
 
-    ShowWindow(hwnd, nCmdShow);	//Задает режим отображения окна 
-    //(Развернуто на весь экран, свернуто в окно, свернуто в панель задач)
-    UpdateWindow(hwnd);			//Прорисовывает окно.
+    ShowWindow(hwnd, nCmdShow);	//Р—Р°РґР°РµС‚ СЂРµР¶РёРј РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РѕРєРЅР° 
+    //(Р Р°Р·РІРµСЂРЅСѓС‚Рѕ РЅР° РІРµСЃСЊ СЌРєСЂР°РЅ, СЃРІРµСЂРЅСѓС‚Рѕ РІ РѕРєРЅРѕ, СЃРІРµСЂРЅСѓС‚Рѕ РІ РїР°РЅРµР»СЊ Р·Р°РґР°С‡)
+    UpdateWindow(hwnd);			//РџСЂРѕСЂРёСЃРѕРІС‹РІР°РµС‚ РѕРєРЅРѕ.
 
-    //3) Запуск цикла сообщений:
-    MSG msg;	//Создаем сообщение
+    //3) Р—Р°РїСѓСЃРє С†РёРєР»Р° СЃРѕРѕР±С‰РµРЅРёР№:
+    MSG msg;	//РЎРѕР·РґР°РµРј СЃРѕРѕР±С‰РµРЅРёРµ
     while (GetMessage(&msg, NULL, 0, 0) > 0)
     {
         TranslateMessage(&msg);
@@ -82,11 +82,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_MOVE:
     {
-        // Получаем координаты окна при перемещении
+        // РџРѕР»СѓС‡Р°РµРј РєРѕРѕСЂРґРёРЅР°С‚С‹ РѕРєРЅР° РїСЂРё РїРµСЂРµРјРµС‰РµРЅРёРё
         int xPos = (int)(short)LOWORD(lParam);
         int yPos = (int)(short)HIWORD(lParam);
 
-        // Обновляем заголовок окна с новыми координатами
+        // РћР±РЅРѕРІР»СЏРµРј Р·Р°РіРѕР»РѕРІРѕРє РѕРєРЅР° СЃ РЅРѕРІС‹РјРё РєРѕРѕСЂРґРёРЅР°С‚Р°РјРё
         std::ostringstream title;
         title << "My Window - Position: (" << xPos << ", " << yPos << ")";
         SetWindowTextA(hwnd, title.str().c_str());
@@ -95,11 +95,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_SIZE:
     {
-        // Получаем размеры окна при изменении размера
+        // РџРѕР»СѓС‡Р°РµРј СЂР°Р·РјРµСЂС‹ РѕРєРЅР° РїСЂРё РёР·РјРµРЅРµРЅРёРё СЂР°Р·РјРµСЂР°
         int width = LOWORD(lParam);
         int height = HIWORD(lParam);
 
-        // Обновляем заголовок окна с новыми размерами
+        // РћР±РЅРѕРІР»СЏРµРј Р·Р°РіРѕР»РѕРІРѕРє РѕРєРЅР° СЃ РЅРѕРІС‹РјРё СЂР°Р·РјРµСЂР°РјРё
         std::ostringstream title;
         title << "My Window - Size: (" << width << "x" << height << ")";
         SetWindowTextA(hwnd, title.str().c_str());
