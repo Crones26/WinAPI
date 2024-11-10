@@ -52,7 +52,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
     INT window_start_x = screen_width / 8;
     INT window_start_y = screen_height / 8;
 
-    HWND hwnd = CreateWindowEx(
+    HWND hwnd = CreateWindowEx
+    (
         NULL,
         g_sz_MY_WINDOW_CLASS,
         g_sz_MY_WINDOW_CLASS,
@@ -83,7 +84,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     switch (uMsg)
     {
     case WM_SETCURSOR:
-        // Установка специальных курсоров в зависимости от стороны, за которую пользователь изменяет размер окна
+        // Установка курсоров в зависимости от стороны
         switch (LOWORD(lParam))
         {
         case HTTOP:
