@@ -37,6 +37,7 @@
     <None Include="curanistarcraft\Starcraft 05.cur">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="curanistarcraft\Starcraft 01.ani" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="bitcoin.ico">

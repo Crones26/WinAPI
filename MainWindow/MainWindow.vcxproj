@@ -136,6 +136,7 @@
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="curanistarcraft\Starcraft 01.ani" />
     <None Include="curanistarcraft\Starcraft 05.cur" />
     <None Include="cursor1.cur" />
     <None Include="Starcraft 3D\AppStarting.ani" />
