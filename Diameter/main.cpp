@@ -1,66 +1,100 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <cmath>
+#include <locale>
 
 #define M_PI 3.14159265358979323846
 
 using namespace std;
 
-void calculateWallThickness() {
+void calculateWallThickness()
+{
     double outerDiameter = 0.0, innerDiameter = 0.0;
 
-    cout << "Введите внешний диаметр трубы (мм): ";
+    cout << "Р’РІРµРґРёС‚Рµ РІРЅРµС€РЅРёР№ РґРёР°РјРµС‚СЂ С‚СЂСѓР±С‹ (РјРј): ";
     cin >> outerDiameter;
 
-    cout << "Введите внутренний диаметр трубы (мм): ";
+    cout << "Р’РІРµРґРёС‚Рµ РІРЅСѓС‚СЂРµРЅРЅРёР№ РґРёР°РјРµС‚СЂ С‚СЂСѓР±С‹ (РјРј): ";
     cin >> innerDiameter;
 
     double wallThickness = (outerDiameter - innerDiameter) / 2;
-    cout << "Толщина стенки трубы: " << wallThickness << " мм" << endl;
+    cout << "РўРѕР»С‰РёРЅР° СЃС‚РµРЅРєРё С‚СЂСѓР±С‹: " << wallThickness << " РјРј" << endl;
 }
 
-void calculatePipeWeight() {
-    double outerDiameter = 0.0, innerDiameter = 0.0, density = 0.0;
+void calculatePipeWeightWithThickness()
+{
+    double outerDiameter = 0.0, wallThickness = 0.0;
+    const double density = 7850; // РџР»РѕС‚РЅРѕСЃС‚СЊ СЃС‚Р°Р»Рё РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РІ РєРі/РјВі
 
-    cout << "Введите внешний диаметр трубы (мм): ";
+    cout << "Р’РІРµРґРёС‚Рµ РІРЅРµС€РЅРёР№ РґРёР°РјРµС‚СЂ С‚СЂСѓР±С‹ (РјРј): ";
     cin >> outerDiameter;
 
-    cout << "Введите внутренний диаметр трубы (мм): ";
-    cin >> innerDiameter;
+    cout << "Р’РІРµРґРёС‚Рµ С‚РѕР»С‰РёРЅСѓ СЃС‚РµРЅРєРё С‚СЂСѓР±С‹ (РјРј): ";
+    cin >> wallThickness;
 
-    cout << "Введите плотность материала трубы (кг/м?): ";
-    cin >> density;
-
-    double outerRadius = outerDiameter / 2 / 1000; // перевод в метры
-    double innerRadius = innerDiameter / 2 / 1000; // перевод в метры
-    double length = 1; // длина трубы в метрах (погонный метр)
+    double innerDiameter = outerDiameter - 2 * wallThickness;
+    double outerRadius = outerDiameter / 2 / 1000; // РїРµСЂРµРІРѕРґ РІ РјРµС‚СЂС‹
+    double innerRadius = innerDiameter / 2 / 1000; // РїРµСЂРµРІРѕРґ РІ РјРµС‚СЂС‹
+    double length = 1; // РґР»РёРЅР° С‚СЂСѓР±С‹ РІ РјРµС‚СЂР°С… (РїРѕРіРѕРЅРЅС‹Р№ РјРµС‚СЂ)
 
     double outerVolume = M_PI * pow(outerRadius, 2) * length;
     double innerVolume = M_PI * pow(innerRadius, 2) * length;
     double wallVolume = outerVolume - innerVolume;
 
     double weight = wallVolume * density;
-    cout << "Вес погонного метра трубы: " << weight << " кг" << endl;
+    cout << "Р’РµСЃ РїРѕРіРѕРЅРЅРѕРіРѕ РјРµС‚СЂР° С‚СЂСѓР±С‹: " << weight << " РєРі" << endl;
 }
 
-int main() {
-    int choice = 0;
+void calculateOuterDiameter()
+{
+    double innerDiameter = 0.0, wallThickness = 0.0;
 
-    cout << "Выберите расчет:" << endl;
-    cout << "1 - Найти толщину стенки" << endl;
-    cout << "2 - Найти вес погонного метра трубы" << endl;
-    cout << "Введите номер выбора: ";
-    cin >> choice;
+    cout << "Р’РІРµРґРёС‚Рµ РІРЅСѓС‚СЂРµРЅРЅРёР№ РґРёР°РјРµС‚СЂ С‚СЂСѓР±С‹ (РјРј): ";
+    cin >> innerDiameter;
 
-    switch (choice) {
-    case 1:
-        calculateWallThickness();
-        break;
-    case 2:
-        calculatePipeWeight();
-        break;
-    default:
-        cout << "Неверный выбор." << endl;
-        break;
+    cout << "Р’РІРµРґРёС‚Рµ С‚РѕР»С‰РёРЅСѓ СЃС‚РµРЅРєРё С‚СЂСѓР±С‹ (РјРј): ";
+    cin >> wallThickness;
+
+    double outerDiameter = innerDiameter + 2 * wallThickness;
+    cout << "Р’РЅРµС€РЅРёР№ РґРёР°РјРµС‚СЂ С‚СЂСѓР±С‹: " << outerDiameter << " РјРј" << endl;
+}
+
+int main()
+{
+    setlocale(LC_ALL, "Russian"); // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р»РѕРєР°Р»РёР·Р°С†РёСЋ РґР»СЏ РїРѕРґРґРµСЂР¶РєРё СЂСѓСЃСЃРєРѕРіРѕ СЏР·С‹РєР°
+
+    while (true)
+    {
+        int choice = 0;
+
+        cout << "\nР’С‹Р±РµСЂРёС‚Рµ СЂР°СЃС‡РµС‚:" << endl;
+        cout << "1 - РќР°Р№С‚Рё С‚РѕР»С‰РёРЅСѓ СЃС‚РµРЅРєРё (РїРѕ РІРЅРµС€РЅРµРјСѓ Рё РІРЅСѓС‚СЂРµРЅРЅРµРјСѓ РґРёР°РјРµС‚СЂСѓ)" << endl;
+        cout << "2 - РќР°Р№С‚Рё РІРµСЃ РїРѕРіРѕРЅРЅРѕРіРѕ РјРµС‚СЂР° С‚СЂСѓР±С‹ (РїРѕ РІРЅРµС€РЅРµРјСѓ РґРёР°РјРµС‚СЂСѓ Рё С‚РѕР»С‰РёРЅРµ СЃС‚РµРЅРєРё)" << endl;
+        cout << "3 - РќР°Р№С‚Рё РІРЅРµС€РЅРёР№ РґРёР°РјРµС‚СЂ (РїРѕ РІРЅСѓС‚СЂРµРЅРЅРµРјСѓ РґРёР°РјРµС‚СЂСѓ Рё С‚РѕР»С‰РёРЅРµ СЃС‚РµРЅРєРё)" << endl;
+        cout << "0 - Р’С‹С…РѕРґ РёР· РїСЂРѕРіСЂР°РјРјС‹" << endl;
+        cout << "Р’РІРµРґРёС‚Рµ РЅРѕРјРµСЂ РІС‹Р±РѕСЂР°: ";
+        cin >> choice;
+
+        if (choice == 0)
+        {
+            cout << "Р’С‹С…РѕРґ РёР· РїСЂРѕРіСЂР°РјРјС‹." << endl;
+            break; // Р’С‹С…РѕРґ РёР· С†РёРєР»Р° Рё Р·Р°РІРµСЂС€РµРЅРёРµ РїСЂРѕРіСЂР°РјРјС‹
+        }
+
+        switch (choice) 
+        {
+        case 1:
+            calculateWallThickness();
+            break;
+        case 2:
+            calculatePipeWeightWithThickness();
+            break;
+        case 3:
+            calculateOuterDiameter();
+            break;
+        default:
+            cout << "РќРµРІРµСЂРЅС‹Р№ РІС‹Р±РѕСЂ. РџРѕРїСЂРѕР±СѓР№С‚Рµ СЃРЅРѕРІР°." << endl;
+            break;
+        }
     }
 
     return 0;
