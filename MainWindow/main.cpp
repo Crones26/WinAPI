@@ -26,7 +26,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	wc.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON2));
 	//wc.hCursor = LoadCursor(hInstance, MAKEINTRESOURCE(IDC_CURSOR1));
-	wc.hCursor = (HCURSOR)LoadImage(NULL, "C:\\Users\\Cympak\\source\\repos\\WinAPI\\MainWindow\\curanistarcraft\\Starcraft 01.ani", IMAGE_CURSOR, 64, 64, LR_LOADFROMFILE);
+	wc.hCursor = (HCURSOR)LoadImage(NULL, "C:\\Users\\Cympak\\source\\repos\\WinAPI\\MainWindow\\curanistarcraft\\Starcraft 02.ani", IMAGE_CURSOR, 64, 64, LR_LOADFROMFILE);
 	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
 
 	wc.hInstance = hInstance;
