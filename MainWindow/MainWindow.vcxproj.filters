@@ -34,6 +34,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Starcraft 3D\AppStarting.ani" />
+    <None Include="curanistarcraft\Starcraft 05.cur">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bitcoin.ico">
