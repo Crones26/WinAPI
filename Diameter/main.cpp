@@ -1,219 +1,268 @@
-﻿#include <iostream>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <Windows.h>
 #include <cmath>
-#include <locale>
-#include <string>
+#include <cstdio>
+#include "resource.h"
 
-#define M_PI 3.14159265358979323846
+// Определяем идентификаторы для полей ввода и кнопок
+#define IDC_EDIT_OUTER_DIAMETER 1001
+#define IDC_EDIT_INNER_DIAMETER 1002
+#define IDC_EDIT_WALL_THICKNESS 1003
+#define IDC_EDIT_LENGTH 1004
+#define IDC_EDIT_WEIGHT 1005
+#define IDC_STATIC_RESULT 1006
+#define IDC_STATIC_ONE_METER_RESULT 1007
+#define IDC_CLEAR_BUTTON 1008
+#define IDC_CALCULATE_BUTTON 1009
 
-using namespace std;
+CONST CHAR g_sz_MY_WINDOW_CLASS[] = "CalculatorWindow";
+LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-// Функция для ввода числа с заменой запятой на точку
-double inputDouble(const string& prompt)
+const double M_PI = 3.14159265358979323846;
+const double density = 7850;  // Плотность стали (кг/м³)
+
+double outerDiameter = 0;
+double innerDiameter = 0;
+double wallThickness = 0;
+double length = 0;
+double weight = 0;
+
+bool updating = false;  // Глобальная переменная для предотвращения зацикливания
+
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
-    string input;
-    cout << prompt;
-    getline(cin, input);
+    WNDCLASSEX wc = { sizeof(wc) };
+    wc.lpfnWndProc = WndProc;
+    wc.hInstance = hInstance;
+    wc.lpszClassName = g_sz_MY_WINDOW_CLASS;
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));  // Установка основной иконки
+    wc.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));  // Установка маленькой иконки
+    wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
 
-    // Заменяем запятые на точки
-    for (char& c : input)
+    // Регистрируем класс окна и проверяем, успешна ли регистрация
+    if (!RegisterClassExA(&wc))
     {
-        if (c == ',') c = '.';
+        MessageBox(NULL, "Не удалось зарегистрировать класс окна.", "Ошибка", MB_OK | MB_ICONERROR);
+        return 1;
     }
 
-    // Преобразуем строку в число
-    return stod(input);
-}
+    // Определите размеры окна
+    int windowWidth = 500;
+    int windowHeight = 300;
 
-// Расчет веса трубы по внешнему диаметру и толщине стенки
-void calculatePipeWeightWithThickness()
-{
-    const double density = 7850;
-    double outerDiameter = inputDouble("Введите внешний диаметр трубы (мм): ");
-    double wallThickness = inputDouble("Введите толщину стенки трубы (мм): ");
-    double length = inputDouble("Введите длину труб (м): ");
+    // Получите размер экрана
+    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    double innerDiameter = outerDiameter - 2 * wallThickness;
-    double outerRadius = outerDiameter / 2 / 1000;
-    double innerRadius = innerDiameter / 2 / 1000;
+    // Вычислите координаты для центрирования окна
+    int x = (screenWidth - windowWidth) / 2;
+    int y = (screenHeight - windowHeight) / 2;
 
-    double outerVolume = M_PI * pow(outerRadius, 2) * length;
-    double innerVolume = M_PI * pow(innerRadius, 2) * length;
-    double wallVolume = outerVolume - innerVolume;
-    
-    double weight = wallVolume * density;
-    cout << "Вес труб длиной " << length << " м: " << weight << " кг" << endl;
-}
+    HWND hwnd = CreateWindowExA(
+        0, g_sz_MY_WINDOW_CLASS, "Калькулятор", WS_OVERLAPPEDWINDOW,
+        x, y, windowWidth, windowHeight, NULL, NULL, hInstance, NULL);
 
-// Расчет веса трубы по внешнему и внутреннему диаметру
-void calculatePipeWeightByDiameters()
-{
-    const double density = 7850;
-    double outerDiameter = inputDouble("Введите внешний диаметр трубы (мм): ");
-    double innerDiameter = inputDouble("Введите внутренний диаметр трубы (мм): ");
-    double length = inputDouble("Введите длину труб (м): ");
-
-    double outerRadius = outerDiameter / 2 / 1000;
-    double innerRadius = innerDiameter / 2 / 1000;
-
-    double outerVolume = M_PI * pow(outerRadius, 2) * length;
-    double innerVolume = M_PI * pow(innerRadius, 2) * length;
-    double wallVolume = outerVolume - innerVolume;
-
-    double weight = wallVolume * density;
-    cout << "Вес труб длиной " << length << " м: " << weight << " кг" << endl;
-}
-
-// Расчет веса трубы по внутреннему диаметру и толщине стенки
-void calculatePipeWeightByInnerDiameterAndThickness()
-{
-    const double density = 7850;
-    double innerDiameter = inputDouble("Введите внутренний диаметр трубы (мм): ");
-    double wallThickness = inputDouble("Введите толщину стенки трубы (мм): ");
-    double length = inputDouble("Введите длину труб (м): ");
-
-    double outerDiameter = innerDiameter + 2 * wallThickness;
-    double outerRadius = outerDiameter / 2 / 1000;
-    double innerRadius = innerDiameter / 2 / 1000;
-
-    double outerVolume = M_PI * pow(outerRadius, 2) * length;
-    double innerVolume = M_PI * pow(innerRadius, 2) * length;
-    double wallVolume = outerVolume - innerVolume;
-
-    double weight = wallVolume * density;
-    cout << "Вес труб длиной " << length << " м: " << weight << " кг" << endl;
-}
-
-// Расчет длины трубы по внешнему диаметру и толщине стенки
-void calculateLengthByOuterDiameterAndThickness()
-{
-    const double density = 7850;
-    double outerDiameter = inputDouble("Введите внешний диаметр трубы (мм): ");
-    double wallThickness = inputDouble("Введите толщину стенки трубы (мм): ");
-    double weight = inputDouble("Введите вес труб (кг): ");
-
-    double innerDiameter = outerDiameter - 2 * wallThickness;
-    double outerRadius = outerDiameter / 2 / 1000;
-    double innerRadius = innerDiameter / 2 / 1000;
-
-    double wallVolumePerMeter = M_PI * (pow(outerRadius, 2) - pow(innerRadius, 2));
-    double length = weight / (density * wallVolumePerMeter);
-
-    cout << "Длина труб: " << length << " м" << endl;
-}
-
-// Расчет длины трубы по внешнему и внутреннему диаметру
-void calculateLengthByOuterAndInnerDiameter()
-{
-    const double density = 7850;
-    double outerDiameter = inputDouble("Введите внешний диаметр трубы (мм): ");
-    double innerDiameter = inputDouble("Введите внутренний диаметр трубы (мм): ");
-    double weight = inputDouble("Введите вес труб (кг): ");
-
-    double outerRadius = outerDiameter / 2 / 1000;
-    double innerRadius = innerDiameter / 2 / 1000;
-
-    double wallVolumePerMeter = M_PI * (pow(outerRadius, 2) - pow(innerRadius, 2));
-    double length = weight / (density * wallVolumePerMeter);
-
-    cout << "Длина труб: " << length << " м" << endl;
-}
-
-// Расчет длины трубы по внутреннему диаметру и толщине стенки
-void calculateLengthByInnerDiameterAndThickness()
-{
-    const double density = 7850;
-    double innerDiameter = inputDouble("Введите внутренний диаметр трубы (мм): ");
-    double wallThickness = inputDouble("Введите толщину стенки трубы (мм): ");
-    double weight = inputDouble("Введите вес труб (кг): ");
-
-    double innerRadius = innerDiameter / 2 / 1000;
-    double outerRadius = innerRadius + wallThickness / 1000;
-
-    double wallVolumePerMeter = M_PI * (pow(outerRadius, 2) - pow(innerRadius, 2));
-    double length = weight / (density * wallVolumePerMeter);
-
-    cout << "Длина труб: " << length << " м" << endl;
-}
-
-// Расчет толщины стенки по внешнему и внутреннему диаметру
-void calculateWallThickness()
-{
-    double outerDiameter = inputDouble("Введите внешний диаметр трубы (мм): ");
-    double innerDiameter = inputDouble("Введите внутренний диаметр трубы (мм): ");
-
-    double wallThickness = (outerDiameter - innerDiameter) / 2;
-    cout << "Толщина стенки труб: " << wallThickness << " мм" << endl;
-}
-
-// Расчет внешнего диаметра по внутреннему диаметру и толщине стенки
-void calculateOuterDiameter()
-{
-    double innerDiameter = inputDouble("Введите внутренний диаметр трубы (мм): ");
-    double wallThickness = inputDouble("Введите толщину стенки трубы (мм): ");
-
-    double outerDiameter = innerDiameter + 2 * wallThickness;
-    cout << "Внешний диаметр труб: " << outerDiameter << " мм" << endl;
-}
-
-int main()
-{
-    setlocale(LC_ALL, "Russian");
-
-    while (true)
+    // Проверяем, успешно ли создано окно
+    if (!hwnd)
     {
-        int choice = 0;
-
-        cout << "\nВыберите расчет:" << endl;
-        cout << "1 - Вес труб (по внешнему диаметру и толщине стенки)" << endl;
-        cout << "2 - Вес труб (по внешнему и внутреннему диаметру)" << endl;
-        cout << "3 - Вес труб (по внутреннему диаметру и толщине стенки)" << endl;
-        cout << "4 - Длина труб (по внешнему диаметру и толщине стенки)" << endl;
-        cout << "5 - Длина труб (по внешнему и внутреннему диаметру)" << endl;
-        cout << "6 - Длина труб (по внутреннему диаметру и толщине стенки)" << endl;
-        cout << "7 - Толщина стенки (по внешнему и внутреннему диаметру)" << endl;
-        cout << "8 - Внешний диаметр (по внутреннему диаметру и толщине стенки)" << endl;
-        cout << "0 - Выход из программы" << endl;
-        cout << "Введите номер выбора: ";
-        cin >> choice;
-        cin.ignore();
-
-        if (choice == 0)
-        {
-            cout << "Выход из программы." << endl;
-            break;
-        }
-
-        switch (choice)
-        {
-        case 1:
-            calculatePipeWeightWithThickness();
-            break;
-        case 2:
-            calculatePipeWeightByDiameters();
-            break;
-        case 3:
-            calculatePipeWeightByInnerDiameterAndThickness();
-            break;
-        case 4:
-            calculateLengthByOuterDiameterAndThickness();
-            break;
-        case 5:
-            calculateLengthByOuterAndInnerDiameter();
-            break;
-        case 6:
-            calculateLengthByInnerDiameterAndThickness();
-            break;
-        case 7:
-            calculateWallThickness();
-            break;
-        case 8:
-            calculateOuterDiameter();
-            break;
-        default:
-            cout << "Неверный выбор. Попробуйте снова." << endl;
-            break;
-        }
+        MessageBox(NULL, "Не удалось создать окно.", "Ошибка", MB_OK | MB_ICONERROR);
+        return 1;
     }
 
+    ShowWindow(hwnd, nCmdShow);
+    UpdateWindow(hwnd);
+
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return msg.wParam;
+}
+
+void AddTextBox(HWND hwnd, int id, int x, int y, int width, int height)
+{
+    CreateWindowA("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_RIGHT,
+        x, y, width, height, hwnd, (HMENU)id, NULL, NULL);
+}
+
+void AddLabel(HWND hwnd, const char* text, int x, int y, int width, int height)
+{
+    CreateWindowA("STATIC", text, WS_VISIBLE | WS_CHILD,
+        x, y, width, height, hwnd, NULL, NULL, NULL);
+}
+
+void AddButton(HWND hwnd, const char* text, int x, int y, int width, int height, int id)
+{
+    CreateWindowA("BUTTON", text, WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+        x, y, width, height, hwnd, (HMENU)id, NULL, NULL);
+}
+
+void AddControls(HWND hwnd)
+{
+    // Размеры полей ввода и меток
+    int editWidth = 100;
+    int editHeight = 20;
+    int labelWidth = 100;
+    int labelHeight = 20;
+    int spacing = 20;  // Отступы между блоками
+    int rowSpacing = 50; // Вертикальный отступ между строками
+
+    // Первый ряд - Диаметры и толщина стенки
+    AddLabel(hwnd, "Наружный(D):", 10, 10, labelWidth, labelHeight);
+    AddTextBox(hwnd, IDC_EDIT_OUTER_DIAMETER, 10, 30, editWidth, editHeight);
+
+    AddLabel(hwnd, "Внутренний(D):", 10 + editWidth + spacing, 10, labelWidth, labelHeight);
+    AddTextBox(hwnd, IDC_EDIT_INNER_DIAMETER, 10 + editWidth + spacing, 30, editWidth, editHeight);
+
+    AddLabel(hwnd, "Стенка(t):", 10 + 2 * (editWidth + spacing), 10, labelWidth, labelHeight);
+    AddTextBox(hwnd, IDC_EDIT_WALL_THICKNESS, 10 + 2 * (editWidth + spacing), 30, editWidth, editHeight);
+
+    // Второй ряд - Длина и вес
+    AddLabel(hwnd, "Длина (м):", 10, 10 + rowSpacing, labelWidth, labelHeight);
+    AddTextBox(hwnd, IDC_EDIT_LENGTH, 10, 30 + rowSpacing, editWidth, editHeight);
+
+    AddLabel(hwnd, "Вес (кг):", 10 + editWidth + spacing, 10 + rowSpacing, labelWidth, labelHeight);
+    AddTextBox(hwnd, IDC_EDIT_WEIGHT, 10 + editWidth + spacing, 30 + rowSpacing, editWidth, editHeight);
+
+    // Поле для отображения результата
+    AddLabel(hwnd, "ИТОГО:", 130, 30 + 2 * rowSpacing, labelWidth, labelHeight);
+    CreateWindowA("STATIC", "", WS_VISIBLE | WS_CHILD | SS_RIGHT, 200, 30 + 2 * rowSpacing, editWidth, editHeight, hwnd, (HMENU)IDC_STATIC_RESULT, NULL, NULL);
+
+    // Поле для отображения результата одного погонного метра
+    AddLabel(hwnd, "Погонный(М):", 10, 30 + 3 * rowSpacing, labelWidth, labelHeight);
+    CreateWindowA("STATIC", "", WS_VISIBLE | WS_CHILD | SS_RIGHT, 130, 30 + 3 * rowSpacing, editWidth, editHeight, hwnd, (HMENU)IDC_STATIC_ONE_METER_RESULT, NULL, NULL);
+
+    // Кнопка расчета
+    AddButton(hwnd, "Рассчитать", 10 + 3 * (editWidth + spacing), 10 + 3 * rowSpacing, 100, 30, IDC_CALCULATE_BUTTON);
+
+    // Кнопка очистки
+    AddButton(hwnd, "Очистить", 10 + 3 * (editWidth + spacing), 10 + 4 * rowSpacing, 100, 30, IDC_CLEAR_BUTTON);
+}
+
+void ClearAllFields(HWND hwnd)
+{
+    // Очистить все текстовые поля
+    SetWindowText(GetDlgItem(hwnd, IDC_EDIT_OUTER_DIAMETER), "");
+    SetWindowText(GetDlgItem(hwnd, IDC_EDIT_INNER_DIAMETER), "");
+    SetWindowText(GetDlgItem(hwnd, IDC_EDIT_WALL_THICKNESS), "");
+    SetWindowText(GetDlgItem(hwnd, IDC_EDIT_LENGTH), "");
+    SetWindowText(GetDlgItem(hwnd, IDC_EDIT_WEIGHT), "");
+    SetWindowText(GetDlgItem(hwnd, IDC_STATIC_RESULT), "");
+    SetWindowText(GetDlgItem(hwnd, IDC_STATIC_ONE_METER_RESULT), "");
+}
+
+void UpdateResults(HWND hwnd)
+{
+    char text[256];
+
+    // Получаем значения наружного диаметра, внутреннего диаметра и толщины стенки
+    GetWindowText(GetDlgItem(hwnd, IDC_EDIT_OUTER_DIAMETER), text, sizeof(text));
+    outerDiameter = atof(text);
+
+    GetWindowText(GetDlgItem(hwnd, IDC_EDIT_INNER_DIAMETER), text, sizeof(text));
+    innerDiameter = atof(text);
+
+    GetWindowText(GetDlgItem(hwnd, IDC_EDIT_WALL_THICKNESS), text, sizeof(text));
+    wallThickness = atof(text);
+
+    // Если хотя бы одно из полей пустое, вычисляем его значение
+    if (outerDiameter != 0 && innerDiameter != 0 && wallThickness == 0)
+    {
+        wallThickness = (outerDiameter - innerDiameter) / 2;
+        char thicknessText[256];
+        sprintf(thicknessText, "%.2f", wallThickness);
+        SetWindowText(GetDlgItem(hwnd, IDC_EDIT_WALL_THICKNESS), thicknessText);
+    }
+
+    if (outerDiameter != 0 && innerDiameter == 0 && wallThickness != 0)
+    {
+        innerDiameter = outerDiameter - 2 * wallThickness;
+        char innerText[256];
+        sprintf(innerText, "%.2f", innerDiameter);
+        SetWindowText(GetDlgItem(hwnd, IDC_EDIT_INNER_DIAMETER), innerText);
+    }
+
+    if (outerDiameter == 0 && innerDiameter != 0 && wallThickness != 0)
+    {
+        outerDiameter = innerDiameter + 2 * wallThickness;
+        char outerText[256];
+        sprintf(outerText, "%.2f", outerDiameter);
+        SetWindowText(GetDlgItem(hwnd, IDC_EDIT_OUTER_DIAMETER), outerText);
+    }
+
+    // Расчет одного погонного метра
+    double innerDiameterCalculated = outerDiameter - 2 * wallThickness;
+    double outerRadius = outerDiameter / 2 / 1000;
+    double innerRadius = innerDiameterCalculated / 2 / 1000;
+
+    double wallVolumePerMeter = M_PI * (pow(outerRadius, 2) - pow(innerRadius, 2));
+    double weightPerMeter = wallVolumePerMeter * density;
+
+    // Отображение результата одного погонного метра
+    sprintf(text, "%.2f кг", weightPerMeter);
+    SetWindowText(GetDlgItem(hwnd, IDC_STATIC_ONE_METER_RESULT), text);
+
+    // Проверка поля веса
+    GetWindowText(GetDlgItem(hwnd, IDC_EDIT_WEIGHT), text, sizeof(text));
+    if (strlen(text) > 0)
+    {
+        weight = atof(text);
+
+        // Расчет длины
+        double length = weight / weightPerMeter;
+
+        // Расчет общего веса
+        double totalWeight = weightPerMeter * length;
+
+        // Отображение только длины в поле "ИТОГО"
+        sprintf(text, "%.2f м", length);
+        SetWindowText(GetDlgItem(hwnd, IDC_STATIC_RESULT), text);
+    }
+
+    // Проверка поля длины
+    GetWindowText(GetDlgItem(hwnd, IDC_EDIT_LENGTH), text, sizeof(text));
+    if (strlen(text) > 0)
+    {
+        length = atof(text);
+
+        // Расчет веса
+        double totalWeight = weightPerMeter * length;
+
+        // Отображение только веса в поле "ИТОГО"
+        sprintf(text, "%.2f кг", totalWeight);
+        SetWindowText(GetDlgItem(hwnd, IDC_STATIC_RESULT), text);
+    }
+}
+
+LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+    case WM_CREATE:
+        AddControls(hwnd);
+        break;
+    case WM_COMMAND:
+        if (LOWORD(wParam) == IDC_CALCULATE_BUTTON)
+        {
+            UpdateResults(hwnd);  // Выполняем расчет при нажатии на кнопку "Рассчитать"
+        }
+
+        if (LOWORD(wParam) == IDC_CLEAR_BUTTON)
+        {
+            ClearAllFields(hwnd);  // Очистка всех полей
+        }
+        break;
+
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        break;
+
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
     return 0;
 }

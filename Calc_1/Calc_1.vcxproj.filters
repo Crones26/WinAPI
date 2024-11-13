@@ -29,9 +29,4 @@
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="calculator_icon.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
 </Project>
