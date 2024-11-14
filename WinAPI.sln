@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Diameter", "Diameter\Diamet
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Calc_1", "Calc_1\Calc_1.vcxproj", "{CC57E37A-4381-4B6C-9423-03D9CEB61C3C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Calc", "Calc\Calc.vcxproj", "{4F5FCA1E-1510-4849-9462-BECC5D4716C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -91,6 +93,14 @@ Global
 		{CC57E37A-4381-4B6C-9423-03D9CEB61C3C}.Release|x64.Build.0 = Release|x64
 		{CC57E37A-4381-4B6C-9423-03D9CEB61C3C}.Release|x86.ActiveCfg = Release|Win32
 		{CC57E37A-4381-4B6C-9423-03D9CEB61C3C}.Release|x86.Build.0 = Release|Win32
+		{4F5FCA1E-1510-4849-9462-BECC5D4716C9}.Debug|x64.ActiveCfg = Debug|x64
+		{4F5FCA1E-1510-4849-9462-BECC5D4716C9}.Debug|x64.Build.0 = Debug|x64
+		{4F5FCA1E-1510-4849-9462-BECC5D4716C9}.Debug|x86.ActiveCfg = Debug|Win32
+		{4F5FCA1E-1510-4849-9462-BECC5D4716C9}.Debug|x86.Build.0 = Debug|Win32
+		{4F5FCA1E-1510-4849-9462-BECC5D4716C9}.Release|x64.ActiveCfg = Release|x64
+		{4F5FCA1E-1510-4849-9462-BECC5D4716C9}.Release|x64.Build.0 = Release|x64
+		{4F5FCA1E-1510-4849-9462-BECC5D4716C9}.Release|x86.ActiveCfg = Release|Win32
+		{4F5FCA1E-1510-4849-9462-BECC5D4716C9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
