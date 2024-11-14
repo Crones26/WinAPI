@@ -51,11 +51,11 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
     int windowWidth = 500;
     int windowHeight = 300;
 
-    // Получите размер экрана
+    // Получитяем размер экрана
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    // Вычислите координаты для центрирования окна
+    // Вычислитяем координаты для центрирования окна
     int x = (screenWidth - windowWidth) / 2;
     int y = (screenHeight - windowHeight) / 2;
 
