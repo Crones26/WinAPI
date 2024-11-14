@@ -10,6 +10,7 @@ char buffer[256];
 double value = 0;
 double currentValue = 0;
 char operation = 0;
+bool isResultDisplayed = false;
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -77,10 +78,11 @@ void AddControls(HWND hwnd)
     AddButton(hwnd, IDC_BTN_2, "2", 80, 200, 60, 40);
     AddButton(hwnd, IDC_BTN_3, "3", 150, 200, 60, 40);
 
-    // Последняя строка кнопок
+    // Строки кнопок: 0, -, +, = 
     AddButton(hwnd, IDC_BTN_0, "0", 10, 250, 60, 40);
-    AddButton(hwnd, IDC_BTN_PLUS, "+", 150, 250, 60, 40);
-    AddButton(hwnd, IDC_BTN_EQUALS, "=", 220, 250, 60, 90);
+    AddButton(hwnd, IDC_BTN_MINUS, "-", 150, 250, 60, 40); // Кнопка "-" 
+    AddButton(hwnd, IDC_BTN_PLUS, "+", 150, 300, 60, 40);  // Кнопка "+" 
+    AddButton(hwnd, IDC_BTN_EQUALS, "=", 220, 250, 60, 90); // Кнопка "=" 
 }
 
 void ProcessButton(HWND hwnd, WPARAM wParam)
@@ -93,27 +95,50 @@ void ProcessButton(HWND hwnd, WPARAM wParam)
     case IDC_BTN_0: case IDC_BTN_1: case IDC_BTN_2: case IDC_BTN_3:
     case IDC_BTN_4: case IDC_BTN_5: case IDC_BTN_6: case IDC_BTN_7:
     case IDC_BTN_8: case IDC_BTN_9:
+        if (isResultDisplayed)
+        {
+            buffer[0] = '\0'; // Очистить буфер после отображения результата
+            isResultDisplayed = false;
+        }
         sprintf(text, "%s%c", buffer, '0' + LOWORD(wParam) - IDC_BTN_0);
         strcpy(buffer, text);
         SetWindowText(hEdit, buffer);
         break;
 
     case IDC_BTN_PLUS:
-        value = atof(buffer);
+        if (buffer[0] != '\0') // Проверить, что в буфере есть число
+        {
+            value = atof(buffer);
+        }
         buffer[0] = '\0';
         operation = '+';
+        isResultDisplayed = false;
+        break;
+
+    case IDC_BTN_MINUS:
+        if (buffer[0] != '\0') // Проверить, что в буфере есть число
+        {
+            value = atof(buffer);
+        }
+        buffer[0] = '\0';
+        operation = '-';
+        isResultDisplayed = false;
         break;
 
     case IDC_BTN_EQUALS:
-        currentValue = atof(buffer);
+        if (buffer[0] != '\0') // Проверить, что в буфере есть число
+        {
+            currentValue = atof(buffer);
+        }
         switch (operation)
         {
         case '+': value += currentValue; break;
+        case '-': value -= currentValue; break;
         }
         sprintf(buffer, "%g", value);
         SetWindowText(hEdit, buffer);
-        buffer[0] = '\0';
-        operation = 0;
+        isResultDisplayed = true;
+        operation = 0; // Сброс операции для нового ввода
         break;
     }
 }
