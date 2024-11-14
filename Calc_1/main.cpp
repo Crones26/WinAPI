@@ -23,15 +23,15 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 
     RegisterClassEx(&wc);
 
-    // Определите размеры окна
+    // Определяем размеры окна
     int windowWidth = 300;
     int windowHeight = 400;
 
-    // Получите размер экрана
+    // Получитяем размер экрана
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    // Вычислите координаты для центрирования окна
+    // Вычисляем координаты для центрирования окна
     int x = (screenWidth - windowWidth) / 2;
     int y = (screenHeight - windowHeight) / 2;
 
@@ -97,7 +97,7 @@ void ProcessButton(HWND hwnd, WPARAM wParam)
     case IDC_BTN_8: case IDC_BTN_9:
         if (isResultDisplayed)
         {
-            buffer[0] = '\0'; // Очистить буфер после отображения результата
+            buffer[0] = '\0'; // Очистка буфера после отображения результата
             isResultDisplayed = false;
         }
         sprintf(text, "%s%c", buffer, '0' + LOWORD(wParam) - IDC_BTN_0);
@@ -106,7 +106,7 @@ void ProcessButton(HWND hwnd, WPARAM wParam)
         break;
 
     case IDC_BTN_PLUS:
-        if (buffer[0] != '\0') // Проверить, что в буфере есть число
+        if (buffer[0] != '\0') // Проверка, что в буфере есть число
         {
             value = atof(buffer);
         }
@@ -116,7 +116,7 @@ void ProcessButton(HWND hwnd, WPARAM wParam)
         break;
 
     case IDC_BTN_MINUS:
-        if (buffer[0] != '\0') // Проверить, что в буфере есть число
+        if (buffer[0] != '\0') // Проверка, что в буфере есть число
         {
             value = atof(buffer);
         }
@@ -126,7 +126,7 @@ void ProcessButton(HWND hwnd, WPARAM wParam)
         break;
 
     case IDC_BTN_EQUALS:
-        if (buffer[0] != '\0') // Проверить, что в буфере есть число
+        if (buffer[0] != '\0') // Проверка, что в буфере есть число
         {
             currentValue = atof(buffer);
         }
