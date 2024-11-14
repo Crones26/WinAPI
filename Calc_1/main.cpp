@@ -27,7 +27,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
     int windowWidth = 300;
     int windowHeight = 400;
 
-    // Получитяем размер экрана
+    // Получяем размер экрана
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
@@ -126,7 +126,7 @@ void ProcessButton(HWND hwnd, WPARAM wParam)
         break;
 
     case IDC_BTN_EQUALS:
-        if (buffer[0] != '\0') // Проверка, что в буфере есть число
+        if (buffer[0] != '\0') // Проверить, что в буфере есть число
         {
             currentValue = atof(buffer);
         }
@@ -135,7 +135,7 @@ void ProcessButton(HWND hwnd, WPARAM wParam)
         case '+': value += currentValue; break;
         case '-': value -= currentValue; break;
         }
-        sprintf(buffer, "%g", value);
+        sprintf(buffer, "%.2lf", value);
         SetWindowText(hEdit, buffer);
         isResultDisplayed = true;
         operation = 0; // Сброс операции для нового ввода
