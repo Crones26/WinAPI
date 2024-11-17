@@ -199,6 +199,15 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
 
         // Обработка кнопки операций
+
+        /*if (LOWORD(wParam) >= IDC_BUTTON_PLUS && LOWORD(wParam) <= IDC_BUTTON_SLASH)
+        {
+            operand1 = atof(sz_display);
+            operation = g_OPERATIONS[LOWORD(wParam) - IDC_BUTTON_PLUS][0];
+            operationSelected = true;
+            SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)"0");
+        }*/
+
         if (LOWORD(wParam) >= IDC_BUTTON_PLUS && LOWORD(wParam) <= IDC_BUTTON_SLASH)
         {
             operand1 = atof(sz_display); // Сохраняем первый операнд
@@ -208,6 +217,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 operation = g_OPERATIONS[operationIndex][0];
                 operationSelected = true;
                 SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)"0"); // Очистка дисплея для второго операнда
+            }
+            else
+            {
+                MessageBox(hwnd, "Недопустимая операция!", "Ошибка", MB_OK | MB_ICONERROR);
             }
         }
 
