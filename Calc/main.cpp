@@ -11,7 +11,6 @@ CONST INT g_i_BUTTON_DOUBLE_SIZE = g_i_BUTTON_SIZE * 2 + g_i_INTERVAL;
 CONST INT g_i_DISPLAY_WIDTH = g_i_BUTTON_SIZE * 5 + g_i_INTERVAL * 4;
 CONST INT g_i_DISPLAY_HEIGHT = 22;
 
-
 CONST INT g_i_START_X = 10;
 CONST INT g_i_START_Y = 10;
 CONST INT g_i_BUTTON_START_X = g_i_START_X;
@@ -44,7 +43,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	wClass.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	wClass.hCursor = LoadCursor(hInstance, IDC_ARROW);
 	wClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
-	//wClass.hbrBackground = CreateSolidBrush(RGB(0,0,200));
 
 	wClass.hInstance = hInstance;
 	wClass.lpszClassName = g_sz_CLASS_NAME;
@@ -64,8 +62,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 		g_sz_CLASS_NAME,
 		g_sz_CLASS_NAME,
 		WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
-		CW_USEDEFAULT, CW_USEDEFAULT,	//Position: X, Y
-		g_i_WINDOW_WIDTH, g_i_WINDOW_HEIGHT,	//Size:		Width, Height
+		CW_USEDEFAULT, CW_USEDEFAULT,	        //Position: X, Y
+		g_i_WINDOW_WIDTH, g_i_WINDOW_HEIGHT,	//Size:	Width, Height
 		NULL,
 		NULL,
 		hInstance,
