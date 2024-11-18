@@ -216,7 +216,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             {
                 operation = g_OPERATIONS[operationIndex][0];
                 operationSelected = true;
-                SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)"0"); // Очистка дисплея для второго операнда
+                SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)"0"); 
             }
             else
             {
