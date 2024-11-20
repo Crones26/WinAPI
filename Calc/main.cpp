@@ -297,7 +297,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			else sprintf(sz_display, "%g", a);
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
 		}
-		// Сохраняем результат в a для продолжения вычислений
+		// Сохраняем результат для продолжения вычислений
 		if (operation != IDC_BUTTON_SLASH || b != 0)
 			a = atof(sz_display);
 	}
