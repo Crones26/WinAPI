@@ -59,7 +59,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	}
 
 	//2) Создание окна:
-// Расчёт координат для центрации окна
+    // Расчёт координат для центрации окна
 	int xPos = (GetSystemMetrics(SM_CXSCREEN) - g_i_WINDOW_WIDTH) / 2; // X-координата центра экрана
 	int yPos = (GetSystemMetrics(SM_CYSCREEN) - g_i_WINDOW_HEIGHT) / 2; // Y-координата центра экрана
 
@@ -278,28 +278,14 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			case IDC_BUTTON_PLUS:	a += b;	break;
 			case IDC_BUTTON_MINUS:	a -= b;	break;
 			case IDC_BUTTON_ASTER:	a *= b;	break;
-			case IDC_BUTTON_SLASH:  
-        if (b == 0) // Обработка деления на ноль
-        {
-            MessageBox(hwnd, "Error: Division by zero!", "Calculator", MB_OK | MB_ICONERROR);
-            a = DBL_MIN;
-        }
-        else
-        {
-            a /= b;
-        }
-        break;
-    default:
-        break;
-    }
+			case IDC_BUTTON_SLASH:	a /= b;	break;
+			}
 			input_operation = FALSE;
 			if (a == DBL_MIN)strcpy(sz_display, "0");
 			else sprintf(sz_display, "%g", a);
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
 		}
-		// Сохраняем результат для продолжения вычислений
-		if (operation != IDC_BUTTON_SLASH || b != 0)
-			a = atof(sz_display);
+		SetFocus(hwnd);
 	}
 	break;
 	case WM_KEYDOWN:
@@ -320,7 +306,6 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 	}
 	break;
-
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
