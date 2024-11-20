@@ -1,5 +1,6 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include<Windows.h>
+#include<iostream>
 #include"resource.h"
 
 CONST CHAR g_sz_CLASS_NAME[] = "Calc PV_319";
@@ -10,6 +11,7 @@ CONST INT g_i_BUTTON_DOUBLE_SIZE = g_i_BUTTON_SIZE * 2 + g_i_INTERVAL;
 
 CONST INT g_i_DISPLAY_WIDTH = g_i_BUTTON_SIZE * 5 + g_i_INTERVAL * 4;
 CONST INT g_i_DISPLAY_HEIGHT = 22;
+
 
 CONST INT g_i_START_X = 10;
 CONST INT g_i_START_Y = 10;
@@ -43,6 +45,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	wClass.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	wClass.hCursor = LoadCursor(hInstance, IDC_ARROW);
 	wClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
+	//wClass.hbrBackground = CreateSolidBrush(RGB(0,0,200));
 
 	wClass.hInstance = hInstance;
 	wClass.lpszClassName = g_sz_CLASS_NAME;
@@ -56,14 +59,18 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	}
 
 	//2) Создание окна:
+// Расчёт координат для центрации окна
+	int xPos = (GetSystemMetrics(SM_CXSCREEN) - g_i_WINDOW_WIDTH) / 2; // X-координата центра экрана
+	int yPos = (GetSystemMetrics(SM_CYSCREEN) - g_i_WINDOW_HEIGHT) / 2; // Y-координата центра экрана
+
 	HWND hwnd = CreateWindowEx
 	(
 		NULL,
 		g_sz_CLASS_NAME,
 		g_sz_CLASS_NAME,
 		WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
-		CW_USEDEFAULT, CW_USEDEFAULT,	        //Position: X, Y
-		g_i_WINDOW_WIDTH, g_i_WINDOW_HEIGHT,	//Size:	Width, Height
+		xPos, yPos,                             // Установка позиции: X, Y
+		g_i_WINDOW_WIDTH, g_i_WINDOW_HEIGHT,    // Установка размеров: Width, Height
 		NULL,
 		NULL,
 		hInstance,
@@ -85,10 +92,18 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 
 INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	static DOUBLE a = DBL_MIN;
+	static DOUBLE b = DBL_MIN;
+	static INT operation = 0;
+	static BOOL input = FALSE;
+	static BOOL input_operation = FALSE;
 	switch (uMsg)
 	{
 	case WM_CREATE:
 	{
+		//AllocConsole();
+		//freopen("CONOUT$", "w", stdout);
+
 		HWND hEdit = CreateWindowEx
 		(
 			NULL, "Edit", "0",
@@ -201,6 +216,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	}
 	break;
+
 	case WM_COMMAND:
 	{
 		CONST INT SIZE = 256;
@@ -210,12 +226,17 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
 		if (LOWORD(wParam) >= IDC_BUTTON_0 && LOWORD(wParam) <= IDC_BUTTON_9)
 		{
+			if (input_operation)sz_display[0] = 0;
+
 			sz_digit[0] = LOWORD(wParam) - IDC_BUTTON_0 + '0';
 			if (strlen(sz_display) == 1 && sz_display[0] == '0')
 				sz_display[0] = sz_digit[0];
 			else
 				strcat(sz_display, sz_digit);
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
+
+			input = TRUE;
+			input_operation = FALSE;
 		}
 		if (LOWORD(wParam) == IDC_BUTTON_POINT)
 		{
@@ -223,8 +244,83 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			strcat(sz_display, ".");
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
 		}
+		//if (LOWORD(wParam) == IDC_EDIT_DISPLAY && HIWORD(wParam) == EN_SETFOCUS)SetFocus(hwnd);
+		if (LOWORD(wParam) == IDC_BUTTON_BSP)
+		{
+			if (strlen(sz_display) == 1)sz_display[0] = '0';
+			else sz_display[strlen(sz_display) - 1] = 0;
+			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
+		}
+		if (LOWORD(wParam) == IDC_BUTTON_CLEAR)
+		{
+			a = b = DBL_MIN;
+			operation = 0;
+			input = FALSE;
+			input_operation = FALSE;
+			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)"0");
+		}
+		if (LOWORD(wParam) >= IDC_BUTTON_PLUS && LOWORD(wParam) <= IDC_BUTTON_SLASH)
+		{
+			//SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
+			if (a == DBL_MIN)a = atof(sz_display);
+			//input = FALSE;
+			SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_EQUAL), 0);
+			operation = LOWORD(wParam);
+			input_operation = TRUE;
+		}
+
+		if (LOWORD(wParam) == IDC_BUTTON_EQUAL)
+		{
+			if (input)b = atof(sz_display);
+			input = FALSE;
+			switch (operation)
+			{
+			case IDC_BUTTON_PLUS:	a += b;	break;
+			case IDC_BUTTON_MINUS:	a -= b;	break;
+			case IDC_BUTTON_ASTER:	a *= b;	break;
+			case IDC_BUTTON_SLASH:  
+        if (b == 0) // Обработка деления на ноль
+        {
+            MessageBox(hwnd, "Error: Division by zero!", "Calculator", MB_OK | MB_ICONERROR);
+            a = DBL_MIN;
+        }
+        else
+        {
+            a /= b;
+        }
+        break;
+    default:
+        break;
+    }
+			input_operation = FALSE;
+			if (a == DBL_MIN)strcpy(sz_display, "0");
+			else sprintf(sz_display, "%g", a);
+			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
+		}
+		// Сохраняем результат в a для продолжения вычислений
+		if (operation != IDC_BUTTON_SLASH || b != 0)
+			a = atof(sz_display);
 	}
 	break;
+	case WM_KEYDOWN:
+	{
+		//if (wParam >= 0x30 && wParam <= 0x39)
+			//SendMessage(hwnd, WM_COMMAND, wParam - 0x30 + IDC_BUTTON_0, 0);
+		if (wParam >= '0' && wParam <= '9')
+			SendMessage(hwnd, WM_COMMAND, wParam - '0' + IDC_BUTTON_0, 0);
+		if (wParam >= 0x60 && wParam <= 0x69)
+			SendMessage(hwnd, WM_COMMAND, wParam - 0x60 + IDC_BUTTON_0, 0);
+
+		switch (wParam)
+		{
+		case VK_DECIMAL:
+		case VK_OEM_PERIOD: SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_POINT), 0); break;
+		case VK_ESCAPE:		SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_CLEAR), 0); break;
+		case VK_BACK:		SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_BSP), 0); break;
+		}
+	}
+	break;
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
