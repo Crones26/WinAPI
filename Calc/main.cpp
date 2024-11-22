@@ -295,7 +295,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			//input = FALSE;
 			input_operation = FALSE;
 			if (a == DBL_MIN)strcpy(sz_display, "0");
-			else sprintf(sz_display, "%g", a);
+			else sprintf(sz_display, "%.2f", a);
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
 		}
 		SetFocus(hwnd);
