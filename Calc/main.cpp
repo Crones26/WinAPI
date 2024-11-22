@@ -43,9 +43,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	wClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	wClass.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 	wClass.hCursor = LoadCursor(hInstance, IDC_ARROW);
-	wClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
-	//wClass.hbrBackground = CreateSolidBrush(RGB(0,0,200));
-
+	wClass.hbrBackground = CreateSolidBrush(RGB(64, 224, 208)); // Берюзовый цвет
 	wClass.hInstance = hInstance;
 	wClass.lpszClassName = g_sz_CLASS_NAME;
 	wClass.lpfnWndProc = (WNDPROC)WndProc;
@@ -103,11 +101,22 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//AllocConsole();
 		//freopen("CONOUT$", "w", stdout);
 
+		// Загрузка шрифта
+		LOGFONT logFont = {};
+		logFont.lfHeight = -20;                // Размер шрифта (пиксели)
+		logFont.lfWeight = FW_NORMAL;          // Обычная толщина шрифта
+		logFont.lfItalic = TRUE;               // Включение наклона вправо
+		strcpy_s(logFont.lfFaceName, "Arial"); // Название шрифта
+
+		// Создание шрифта 
+		HFONT hItalicFont = CreateFontIndirect(&logFont);
+
+		// Создание окна
 		HWND hEdit = CreateWindowEx
 		(
 			NULL, "Edit", "0",
 			WS_CHILD | WS_VISIBLE | WS_BORDER | ES_RIGHT,
-			10, 10,
+			g_i_START_X, g_i_START_Y,
 			g_i_DISPLAY_WIDTH, g_i_DISPLAY_HEIGHT,
 			hwnd,
 			(HMENU)IDC_EDIT_DISPLAY,
@@ -115,32 +124,54 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL
 		);
 
+		// Применение шрифта
+		SendMessage(hEdit, WM_SETFONT, (WPARAM)hItalicFont, TRUE);
+
 		//TODO:	Button Icons.
 		CHAR sz_digit[2] = "0";
 		for (int i = 6; i >= 0; i -= 3)
 		{
 			for (int j = 0; j < 3; j++)
 			{
-				sz_digit[0] = 49 + i + j;	//49 - ASCII-код единицы.
-				CreateWindowEx
+				int buttonID = IDC_BUTTON_1 + i + j;
+				HWND hButton = CreateWindowEx
 				(
-					NULL, "Button", sz_digit,
-					WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+					NULL, "Button", NULL,
+					WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 					g_i_BUTTON_START_X + j * (g_i_BUTTON_SIZE + g_i_INTERVAL),
 					g_i_BUTTON_START_Y + (g_i_BUTTON_SIZE + g_i_INTERVAL) * (2 - i / 3),
 					g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
 					hwnd,
-					(HMENU)(IDC_BUTTON_1 + i + j),
+					(HMENU)buttonID,
 					GetModuleHandle(NULL),
 					NULL
 				);
+
+				// Формируем путь к изображению кнопки
+				CHAR szBitmapPath[256];
+				sprintf(szBitmapPath, "ButtonsBMP\\metal_mistral\\button_%d.bmp", i + j + 1);
+
+				// Загружаем изображение
+				HBITMAP hBitmap = (HBITMAP)LoadImage
+				(
+					GetModuleHandle(NULL),
+					szBitmapPath,
+					IMAGE_BITMAP,
+					g_i_BUTTON_SIZE,
+					g_i_BUTTON_SIZE,
+					LR_LOADFROMFILE
+				);
+
+				// Назначаем изображение кнопке
+				SendMessage(hButton, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
 			}
 		}
 
-		CreateWindowEx
+		// Кнопка "0"
+		HWND hButton0 = CreateWindowEx
 		(
-			NULL, "Button", "0",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			NULL, "Button", NULL,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 			g_i_BUTTON_START_X,
 			g_i_BUTTON_START_Y + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 3,
 			g_i_BUTTON_DOUBLE_SIZE, g_i_BUTTON_SIZE,
@@ -149,10 +180,22 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			GetModuleHandle(NULL),
 			NULL
 		);
-		CreateWindowEx
+		HBITMAP hBitmap0 = (HBITMAP)LoadImage
 		(
-			NULL, "Button", ".",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			GetModuleHandle(NULL),
+			"ButtonsBMP\\metal_mistral\\button_0.bmp",
+			IMAGE_BITMAP,
+			g_i_BUTTON_DOUBLE_SIZE,
+			g_i_BUTTON_SIZE,
+			LR_LOADFROMFILE
+		);
+		SendMessage(hButton0, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap0);
+
+		// Кнопка "точка"
+		HWND hButtonPoint = CreateWindowEx
+		(
+			NULL, "Button", NULL,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 			g_i_BUTTON_START_X + g_i_BUTTON_DOUBLE_SIZE + g_i_INTERVAL,
 			g_i_BUTTON_START_Y + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 3,
 			g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
@@ -161,13 +204,24 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			GetModuleHandle(NULL),
 			NULL
 		);
+		HBITMAP hBitmapPoint = (HBITMAP)LoadImage
+		(
+			GetModuleHandle(NULL),
+			"ButtonsBMP\\metal_mistral\\button_point.bmp",
+			IMAGE_BITMAP,
+			g_i_BUTTON_SIZE,
+			g_i_BUTTON_SIZE,
+			LR_LOADFROMFILE
+		);
+		SendMessage(hButtonPoint, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmapPoint);
 
+		// Создание кнопок операций (+, -, *, /)
 		for (int i = 0; i < 4; i++)
 		{
-			CreateWindowEx
+			HWND hButton = CreateWindowEx
 			(
-				NULL, "Button", g_OPERATIONS[i],
-				WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+				NULL, "Button", NULL,
+				WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 				g_i_OPERATION_BUTTON_START_X,
 				g_i_BUTTON_START_Y + (g_i_BUTTON_SIZE + g_i_INTERVAL) * (3 - i),
 				g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
@@ -176,48 +230,70 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				GetModuleHandle(NULL),
 				NULL
 			);
+
+			// Путь к изображению кнопки
+			const CHAR* operationFiles[] =
+			{
+				"button_plus.bmp",
+				"button_minus.bmp",
+				"button_aster.bmp",
+				"button_slash.bmp"
+			};
+			CHAR szBitmapPath[256];
+			sprintf(szBitmapPath, "ButtonsBMP\\metal_mistral\\%s", operationFiles[i]);
+
+			// Загружаем изображение
+			HBITMAP hBitmap = (HBITMAP)LoadImage(
+				GetModuleHandle(NULL),
+				szBitmapPath,
+				IMAGE_BITMAP,
+				g_i_BUTTON_SIZE,
+				g_i_BUTTON_SIZE,
+				LR_LOADFROMFILE
+			);
+
+			// Назначаем изображение кнопке
+			SendMessage(hButton, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
 		}
 
-		CreateWindowEx
-		(
-			NULL, "Button", "<-",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			g_i_CONTROL_BUTTON_START_X,
-			g_i_CONTROL_BUTTON_START_Y,
-			g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
-			hwnd,
-			(HMENU)IDC_BUTTON_BSP,
-			GetModuleHandle(NULL),
-			NULL
-		);
-		CreateWindowEx
-		(
-			NULL, "Button", "C",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			g_i_CONTROL_BUTTON_START_X,
-			g_i_CONTROL_BUTTON_START_Y + g_i_BUTTON_SIZE + g_i_INTERVAL,
-			g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
-			hwnd,
-			(HMENU)IDC_BUTTON_CLEAR,
-			GetModuleHandle(NULL),
-			NULL
-		);
-		CreateWindowEx
-		(
-			NULL, "Button", "=",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			g_i_CONTROL_BUTTON_START_X,
-			g_i_CONTROL_BUTTON_START_Y + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 2,
-			g_i_BUTTON_SIZE, g_i_BUTTON_DOUBLE_SIZE,
-			hwnd,
-			(HMENU)IDC_BUTTON_EQUAL,
-			GetModuleHandle(NULL),
-			NULL
-		);
+		// Кнопки управления (C, <-, =)
+		const CHAR* controlFiles[] =
+		{
+			"button_bsp.bmp",  // Backspace
+			"button_clr.bmp",  // Clear
+			"button_equal.bmp" // Equal
+		};
+		for (int i = 0; i < 3; i++)
+		{
+			HWND hButton = CreateWindowEx
+			(
+				NULL, "Button", NULL,
+				WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
+				g_i_CONTROL_BUTTON_START_X,
+				g_i_CONTROL_BUTTON_START_Y + (g_i_BUTTON_SIZE + g_i_INTERVAL) * i,
+				g_i_BUTTON_SIZE, (i == 2) ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE,
+				hwnd,
+				(HMENU)(IDC_BUTTON_BSP + i),
+				GetModuleHandle(NULL),
+				NULL
+			);
 
+			// Загружаем изображение
+			CHAR szBitmapPath[256];
+			sprintf(szBitmapPath, "ButtonsBMP\\metal_mistral\\%s", controlFiles[i]);
+
+			HBITMAP hBitmap = (HBITMAP)LoadImage
+			(
+				GetModuleHandle(NULL),
+				szBitmapPath,
+				IMAGE_BITMAP,
+				g_i_BUTTON_SIZE,
+				(i == 2) ? g_i_BUTTON_DOUBLE_SIZE : g_i_BUTTON_SIZE,
+				LR_LOADFROMFILE
+			);
+			SendMessage(hButton, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
+		}
 	}
-	break;
-
 	case WM_COMMAND:
 	{
 		CONST INT SIZE = 256;
@@ -301,6 +377,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SetFocus(hwnd);
 	}
 	break;
+
 	case WM_KEYDOWN:
 	{
 		if (GetKeyState(VK_SHIFT) < 0)
