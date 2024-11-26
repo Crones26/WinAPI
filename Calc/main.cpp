@@ -293,8 +293,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		// Создание подменю для выбора скинов
 		HMENU hSubmenuSkins = CreatePopupMenu();
-		InsertMenu(hSubmenuSkins, 0, MF_BYPOSITION | MF_STRING, IDM_SKIN_SQUARE_BLUE, "Square Blue");
-		InsertMenu(hSubmenuSkins, 1, MF_BYPOSITION | MF_STRING, IDM_SKIN_METAL_MISTRAL, "Metal Mistral");
+		InsertMenu(hSubmenuSkins, 0, MF_BYPOSITION | MF_STRING, IDM_SKIN_METAL_MISTRAL, "Metal Mistral");
+		InsertMenu(hSubmenuSkins, 1, MF_BYPOSITION | MF_STRING, IDM_SKIN_SQUARE_BLUE, "Square Blue");
 
 		// Создание основного меню
 		HMENU hMenu = CreatePopupMenu();
@@ -304,7 +304,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		// Отображение контекстного меню
 		int cmd = TrackPopupMenu
-		(hMenu,
+		(
+			hMenu,
 			TPM_LEFTALIGN | TPM_BOTTOMALIGN | TPM_RETURNCMD,
 			LOWORD(lParam), HIWORD(lParam),
 			0,
@@ -433,34 +434,79 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	case WM_KEYDOWN:
 	{
-		if (GetKeyState(VK_SHIFT) < 0)
-		{
-			if (wParam == 0x38) SendMessage(hwnd, WM_COMMAND, IDC_BUTTON_ASTER, 0);
-		}
-		//if (wParam >= 0x30 && wParam <= 0x39)
-			//SendMessage(hwnd, WM_COMMAND, wParam - 0x30 + IDC_BUTTON_0, 0);
-		else if (wParam >= '0' && wParam <= '9')
-			SendMessage(hwnd, WM_COMMAND, wParam - '0' + IDC_BUTTON_0, 0);
-		else if (wParam >= 0x60 && wParam <= 0x69)
-			SendMessage(hwnd, WM_COMMAND, wParam - 0x60 + IDC_BUTTON_0, 0);
+		// Получение ID кнопки, соответствующей нажатой клавише
+		int buttonID = -1;
+		if (wParam >= '0' && wParam <= '9')
+			buttonID = wParam - '0' + IDC_BUTTON_0;
+		else if (wParam >= VK_NUMPAD0 && wParam <= VK_NUMPAD9) // Numpad цифры
+			buttonID = wParam - VK_NUMPAD0 + IDC_BUTTON_0;
+		else if (wParam == VK_OEM_PERIOD || wParam == VK_DECIMAL) // Точка
+			buttonID = IDC_BUTTON_POINT;
+		else if (wParam == VK_ADD)
+			buttonID = IDC_BUTTON_PLUS;
+		else if (wParam == VK_SUBTRACT)
+			buttonID = IDC_BUTTON_MINUS;
+		else if (wParam == VK_MULTIPLY)
+			buttonID = IDC_BUTTON_ASTER;
+		else if (wParam == VK_DIVIDE)
+			buttonID = IDC_BUTTON_SLASH;
+		else if (wParam == VK_BACK)
+			buttonID = IDC_BUTTON_BSP;
+		else if (wParam == VK_ESCAPE)
+			buttonID = IDC_BUTTON_CLR;
+		else if (wParam == VK_RETURN)
+			buttonID = IDC_BUTTON_EQUAL;
 
-		switch (wParam)
+		// Если кнопка найдена, выделяем её
+		if (buttonID != -1)
 		{
-		case VK_ADD:
-		case VK_OEM_PLUS:	SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_PLUS), 0);	break;
-		case VK_SUBTRACT:
-		case VK_OEM_MINUS:	SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_MINUS), 0);	break;
-		case VK_MULTIPLY:	SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_ASTER), 0); break;
-		case VK_DIVIDE:
-		case VK_OEM_2:		SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_SLASH), 0); break;
-		case VK_DECIMAL:
-		case VK_OEM_PERIOD: SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_POINT), 0); break;
-		case VK_BACK:		SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_BSP), 0);	break;
-		case VK_ESCAPE:		SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_CLR), 0); break;
-		case VK_RETURN:		SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_EQUAL), 0); break;
+			HWND hButton = GetDlgItem(hwnd, buttonID);
+			if (hButton)
+			{
+				SendMessage(hButton, BM_SETSTATE, TRUE, 0); // Устанавливаем состояние нажатия
+			}
 		}
+		break;
 	}
-	break;
+
+	case WM_KEYUP:
+	{
+		// Получение ID кнопки, соответствующей нажатой клавише
+		int buttonID = -1;
+		if (wParam >= '0' && wParam <= '9')
+			buttonID = wParam - '0' + IDC_BUTTON_0;
+		else if (wParam >= VK_NUMPAD0 && wParam <= VK_NUMPAD9)
+			buttonID = wParam - VK_NUMPAD0 + IDC_BUTTON_0;
+		else if (wParam == VK_OEM_PERIOD || wParam == VK_DECIMAL)
+			buttonID = IDC_BUTTON_POINT;
+		else if (wParam == VK_ADD)
+			buttonID = IDC_BUTTON_PLUS;
+		else if (wParam == VK_SUBTRACT)
+			buttonID = IDC_BUTTON_MINUS;
+		else if (wParam == VK_MULTIPLY)
+			buttonID = IDC_BUTTON_ASTER;
+		else if (wParam == VK_DIVIDE)
+			buttonID = IDC_BUTTON_SLASH;
+		else if (wParam == VK_BACK)
+			buttonID = IDC_BUTTON_BSP;
+		else if (wParam == VK_ESCAPE)
+			buttonID = IDC_BUTTON_CLR;
+		else if (wParam == VK_RETURN)
+			buttonID = IDC_BUTTON_EQUAL;
+
+		// Если кнопка найдена, снимаем выделение и выполняем действие
+		if (buttonID != -1)
+		{
+			HWND hButton = GetDlgItem(hwnd, buttonID);
+			if (hButton)
+			{
+				SendMessage(hButton, BM_SETSTATE, FALSE, 0); // Снимаем состояние нажатия
+				SendMessage(hwnd, WM_COMMAND, buttonID, 0);  // Отправляем сообщение об активации кнопки
+			}
+		}
+		break;
+	}
+
 	case WM_DESTROY:
 	{
 		if (hbrMainBackground)
