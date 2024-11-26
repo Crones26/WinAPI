@@ -293,8 +293,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		// Создание подменю для выбора скинов
 		HMENU hSubmenuSkins = CreatePopupMenu();
-		InsertMenu(hSubmenuSkins, 0, MF_BYPOSITION | MF_STRING, IDM_SKIN_METAL_MISTRAL, "Metal Mistral");
-		InsertMenu(hSubmenuSkins, 1, MF_BYPOSITION | MF_STRING, IDM_SKIN_SQUARE_BLUE, "Square Blue");
+		InsertMenu(hSubmenuSkins, 0, MF_BYPOSITION | MF_STRING, IDM_SKIN_SQUARE_BLUE, "Square Blue");
+		InsertMenu(hSubmenuSkins, 1, MF_BYPOSITION | MF_STRING, IDM_SKIN_METAL_MISTRAL, "Metal Mistral");
 
 		// Создание основного меню
 		HMENU hMenu = CreatePopupMenu();
@@ -304,8 +304,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		// Отображение контекстного меню
 		int cmd = TrackPopupMenu
-		(
-			hMenu,
+		(hMenu,
 			TPM_LEFTALIGN | TPM_BOTTOMALIGN | TPM_RETURNCMD,
 			LOWORD(lParam), HIWORD(lParam),
 			0,
