@@ -434,78 +434,80 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	case WM_KEYDOWN:
 	{
-		// Получение ID кнопки, соответствующей нажатой клавише
-		int buttonID = -1;
+		HWND hButton = NULL;
+		// Обработка цифровых клавиш (0-9)
 		if (wParam >= '0' && wParam <= '9')
-			buttonID = wParam - '0' + IDC_BUTTON_0;
-		else if (wParam >= VK_NUMPAD0 && wParam <= VK_NUMPAD9) // Numpad цифры
-			buttonID = wParam - VK_NUMPAD0 + IDC_BUTTON_0;
-		else if (wParam == VK_OEM_PERIOD || wParam == VK_DECIMAL) // Точка
-			buttonID = IDC_BUTTON_POINT;
-		else if (wParam == VK_ADD)
-			buttonID = IDC_BUTTON_PLUS;
-		else if (wParam == VK_SUBTRACT)
-			buttonID = IDC_BUTTON_MINUS;
-		else if (wParam == VK_MULTIPLY)
-			buttonID = IDC_BUTTON_ASTER;
-		else if (wParam == VK_DIVIDE)
-			buttonID = IDC_BUTTON_SLASH;
-		else if (wParam == VK_BACK)
-			buttonID = IDC_BUTTON_BSP;
-		else if (wParam == VK_ESCAPE)
-			buttonID = IDC_BUTTON_CLR;
-		else if (wParam == VK_RETURN)
-			buttonID = IDC_BUTTON_EQUAL;
-
-		// Если кнопка найдена, выделяем её
-		if (buttonID != -1)
 		{
-			HWND hButton = GetDlgItem(hwnd, buttonID);
-			if (hButton)
+			hButton = GetDlgItem(hwnd, wParam - '0' + IDC_BUTTON_0);
+		}
+		else if (wParam >= 0x60 && wParam <= 0x69)
+		{
+			hButton = GetDlgItem(hwnd, wParam - 0x60 + IDC_BUTTON_0);
+		}
+		else
+		{
+			switch (wParam)
 			{
-				SendMessage(hButton, BM_SETSTATE, TRUE, 0); // Устанавливаем состояние нажатия
+			case VK_ADD:
+			case VK_OEM_PLUS:hButton = GetDlgItem(hwnd, IDC_BUTTON_PLUS);break;
+			case VK_SUBTRACT:
+			case VK_OEM_MINUS:hButton = GetDlgItem(hwnd, IDC_BUTTON_MINUS);break;
+			case VK_MULTIPLY:hButton = GetDlgItem(hwnd, IDC_BUTTON_ASTER);break;
+			case VK_DIVIDE:
+			case VK_OEM_2:hButton = GetDlgItem(hwnd, IDC_BUTTON_SLASH);break;
+			case VK_DECIMAL:
+			case VK_OEM_PERIOD:hButton = GetDlgItem(hwnd, IDC_BUTTON_POINT);break;
+			case VK_BACK:hButton = GetDlgItem(hwnd, IDC_BUTTON_BSP);break;
+			case VK_ESCAPE:hButton = GetDlgItem(hwnd, IDC_BUTTON_CLR);break;
+			case VK_RETURN:hButton = GetDlgItem(hwnd, IDC_BUTTON_EQUAL);break;
 			}
 		}
-		break;
+
+		if (hButton)
+		{
+			SendMessage(hButton, BM_SETSTATE, TRUE, 0); // Подсвечиваем кнопку
+		}
 	}
+	break;
 
 	case WM_KEYUP:
 	{
-		// Получение ID кнопки, соответствующей нажатой клавише
-		int buttonID = -1;
+		HWND hButton = NULL;
+		// Обработка цифровых клавиш (0-9)
 		if (wParam >= '0' && wParam <= '9')
-			buttonID = wParam - '0' + IDC_BUTTON_0;
-		else if (wParam >= VK_NUMPAD0 && wParam <= VK_NUMPAD9)
-			buttonID = wParam - VK_NUMPAD0 + IDC_BUTTON_0;
-		else if (wParam == VK_OEM_PERIOD || wParam == VK_DECIMAL)
-			buttonID = IDC_BUTTON_POINT;
-		else if (wParam == VK_ADD)
-			buttonID = IDC_BUTTON_PLUS;
-		else if (wParam == VK_SUBTRACT)
-			buttonID = IDC_BUTTON_MINUS;
-		else if (wParam == VK_MULTIPLY)
-			buttonID = IDC_BUTTON_ASTER;
-		else if (wParam == VK_DIVIDE)
-			buttonID = IDC_BUTTON_SLASH;
-		else if (wParam == VK_BACK)
-			buttonID = IDC_BUTTON_BSP;
-		else if (wParam == VK_ESCAPE)
-			buttonID = IDC_BUTTON_CLR;
-		else if (wParam == VK_RETURN)
-			buttonID = IDC_BUTTON_EQUAL;
-
-		// Если кнопка найдена, снимаем выделение и выполняем действие
-		if (buttonID != -1)
 		{
-			HWND hButton = GetDlgItem(hwnd, buttonID);
-			if (hButton)
+			hButton = GetDlgItem(hwnd, wParam - '0' + IDC_BUTTON_0);
+		}
+		else if (wParam >= 0x60 && wParam <= 0x69)
+		{
+			hButton = GetDlgItem(hwnd, wParam - 0x60 + IDC_BUTTON_0);
+		}
+		else
+		{
+			switch (wParam)
 			{
-				SendMessage(hButton, BM_SETSTATE, FALSE, 0); // Снимаем состояние нажатия
-				SendMessage(hwnd, WM_COMMAND, buttonID, 0);  // Отправляем сообщение об активации кнопки
+			case VK_ADD:
+			case VK_OEM_PLUS:hButton = GetDlgItem(hwnd, IDC_BUTTON_PLUS);break;
+			case VK_SUBTRACT:
+			case VK_OEM_MINUS:hButton = GetDlgItem(hwnd, IDC_BUTTON_MINUS);break;
+			case VK_MULTIPLY:hButton = GetDlgItem(hwnd, IDC_BUTTON_ASTER);break;
+			case VK_DIVIDE:
+			case VK_OEM_2:hButton = GetDlgItem(hwnd, IDC_BUTTON_SLASH);break;
+			case VK_DECIMAL:
+			case VK_OEM_PERIOD:hButton = GetDlgItem(hwnd, IDC_BUTTON_POINT);break;
+			case VK_BACK:hButton = GetDlgItem(hwnd, IDC_BUTTON_BSP);break;
+			case VK_ESCAPE:hButton = GetDlgItem(hwnd, IDC_BUTTON_CLR);break;
+			case VK_RETURN:hButton = GetDlgItem(hwnd, IDC_BUTTON_EQUAL);break;
 			}
 		}
-		break;
+
+		if (hButton)
+		{
+			SendMessage(hButton, BM_SETSTATE, FALSE, 0); // Убираем подсветку кнопки
+			SendMessage(hwnd, WM_COMMAND, GetDlgCtrlID(hButton), 0); // Отправляем команду нажатия
+		}
 	}
+	break;
 
 	case WM_DESTROY:
 	{
