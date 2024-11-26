@@ -65,7 +65,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	}
 
 	//2) Создание окна:
-	// Расчёт координат для центрации окна
 	int xPos = (GetSystemMetrics(SM_CXSCREEN) - g_i_WINDOW_WIDTH) / 2; // X-координата центра экрана
 	int yPos = (GetSystemMetrics(SM_CYSCREEN) - g_i_WINDOW_HEIGHT) / 2; // Y-координата центра экрана
 
@@ -133,15 +132,11 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		AddFontResourceEx("Fonts\\digital-7.ttf", FR_PRIVATE, 0);
 		HFONT hFont = CreateFont
 		(
-			g_i_DISPLAY_HEIGHT - 2, g_i_DISPLAY_HEIGHT / 3,
-			0, 0, FW_BOLD,
-			FALSE, FALSE, FALSE,
-			DEFAULT_CHARSET, OUT_TT_PRECIS,
-			CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+			g_i_DISPLAY_HEIGHT - 2, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
+			DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
 			FF_DONTCARE, "digital-7"
 		);
 		SendMessage(hEdit, WM_SETFONT, (WPARAM)hFont, TRUE);
-
 
 		//TODO:	Button Icons.
 		CHAR sz_digit[2] = "0";
@@ -264,8 +259,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			HDC hdc = (HDC)wParam;
 			RECT rc;
 			GetClientRect(hwnd, &rc);
-			FillRect(hdc, &rc, hbrMainBackground); // Заливаем фон новым цветом
-			return 0;                              // Указываем, что фон обработан
+			FillRect(hdc, &rc, hbrMainBackground); // Заливаем фон цветом
+			return 0;
 		}
 		break;
 	}
@@ -300,7 +295,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_CONTEXT_MENU));
 		if (hMenu)
 		{
-			HMENU hSubMenu = GetSubMenu(hMenu, 0); // Получаем первый подменю
+			HMENU hSubMenu = GetSubMenu(hMenu, 0); // Получаем подменю
 
 			// Устанавливаем позицию курсора мыши
 			POINT pt;
@@ -329,6 +324,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (!input && !input_operation)
 			{
 				SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_CLR), 0);
+				//ZeroMemory(sz_display, SIZE);
 				sz_display[0] = 0;
 			}
 			if (!input && input_operation) sz_display[0] = 0;
@@ -341,6 +337,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
 
 			input = TRUE;
+			//input_operation = FALSE;
 		}
 
 		// Точка
@@ -352,6 +349,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 
 		// Backspace
+		//if (LOWORD(wParam) == IDC_EDIT_DISPLAY && HIWORD(wParam) == EN_SETFOCUS)SetFocus(hwnd);
 		if (LOWORD(wParam) == IDC_BUTTON_BSP)
 		{
 			if (strlen(sz_display) == 1) sz_display[0] = '0';
@@ -366,6 +364,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			operation = 0;
 			input = FALSE;
 			input_operation = FALSE;
+			//strcpy(sz_display, "0");
+			//sz_display[0] = 0;
 			ZeroMemory(sz_display, SIZE);
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)"0");
 		}
@@ -373,7 +373,9 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// Операции (+, -, *, /)
 		if (LOWORD(wParam) >= IDC_BUTTON_PLUS && LOWORD(wParam) <= IDC_BUTTON_SLASH)
 		{
+			//SendMessage(hEditDisplay, WM_GETTEXT, SIZE, (LPARAM)sz_display);
 			if (a == DBL_MIN) a = atof(sz_display);
+			//input = FALSE;
 			if (input_operation) SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_EQUAL), 0);
 			operation = LOWORD(wParam);
 			input = FALSE;
