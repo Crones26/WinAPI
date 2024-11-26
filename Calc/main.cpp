@@ -291,24 +291,55 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	case WM_CONTEXTMENU:
 	{
-		// Обработка контекстного меню
-		HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_CONTEXT_MENU));
-		if (hMenu)
+		// Создание подменю для выбора скинов
+		HMENU hSubmenuSkins = CreatePopupMenu();
+		InsertMenu(hSubmenuSkins, 0, MF_BYPOSITION | MF_STRING, IDM_SKIN_METAL_MISTRAL, "Metal Mistral");
+		InsertMenu(hSubmenuSkins, 1, MF_BYPOSITION | MF_STRING, IDM_SKIN_SQUARE_BLUE, "Square Blue");
+
+		// Создание основного меню
+		HMENU hMenu = CreatePopupMenu();
+		InsertMenu(hMenu, 0, MF_BYPOSITION | MF_POPUP, (UINT_PTR)hSubmenuSkins, "Skins");
+		InsertMenu(hMenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+		InsertMenu(hMenu, 2, MF_BYPOSITION | MF_STRING, IDR_EXIT, "Exit");
+
+		// Отображение контекстного меню
+		int cmd = TrackPopupMenu
+		(
+			hMenu,
+			TPM_LEFTALIGN | TPM_BOTTOMALIGN | TPM_RETURNCMD,
+			LOWORD(lParam), HIWORD(lParam),
+			0,
+			hwnd,
+			NULL
+		);
+
+		// Обработка выбора пользователя
+		switch (cmd)
 		{
-			HMENU hSubMenu = GetSubMenu(hMenu, 0); // Получаем подменю
+		case IDM_SKIN_METAL_MISTRAL:
+			g_szCurrentSkin = "metal_mistral";
+			hbrMainBackground = CreateSolidBrush(RGB(70, 70, 70)); // Серый фон
+			SetSkin(hwnd, g_szCurrentSkin);
+			InvalidateRect(hwnd, NULL, TRUE); // Перерисовка окна
+			break;
 
-			// Устанавливаем позицию курсора мыши
-			POINT pt;
-			GetCursorPos(&pt);
+		case IDM_SKIN_SQUARE_BLUE:
+			g_szCurrentSkin = "square_blue";
+			hbrMainBackground = CreateSolidBrush(RGB(0, 102, 204)); // Синий фон
+			SetSkin(hwnd, g_szCurrentSkin);
+			InvalidateRect(hwnd, NULL, TRUE); // Перерисовка окна
+			break;
 
-			// Отображаем контекстное меню
-			TrackPopupMenu(hSubMenu, TPM_RIGHTBUTTON, pt.x, pt.y, 0, hwnd, NULL);
-
-			// Удаляем меню из памяти после использования
-			DestroyMenu(hMenu);
+		case IDR_EXIT:
+			DestroyWindow(hwnd); // Завершение работы программы
+			break;
 		}
-		break;
+
+		// Удаление меню из памяти
+		DestroyMenu(hSubmenuSkins);
+		DestroyMenu(hMenu);
 	}
+	break;
 
 	case WM_COMMAND:
 	{
@@ -399,27 +430,8 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			else sprintf(sz_display, "%g", a);
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
 		}
-
-		// Обработка выбора скина
-		switch (LOWORD(wParam))
-		{
-		case IDM_SKIN_SQUARE_BLUE:
-			g_szCurrentSkin = "square_blue";
-			hbrMainBackground = CreateSolidBrush(RGB(0, 102, 204)); // Синий фон
-			SetSkin(hwnd, g_szCurrentSkin);
-			InvalidateRect(hwnd, NULL, TRUE); // Перерисовка окна
-			break;
-
-		case IDM_SKIN_METAL_MISTRAL:
-			g_szCurrentSkin = "metal_mistral";
-			hbrMainBackground = CreateSolidBrush(RGB(70, 70, 70)); // Серый фон
-			SetSkin(hwnd, g_szCurrentSkin);
-			InvalidateRect(hwnd, NULL, TRUE); // Перерисовка окна
-			break;
-		}
-		SetFocus(hwnd);
 	}
-	break;
+
 	case WM_KEYDOWN:
 	{
 		if (GetKeyState(VK_SHIFT) < 0)
