@@ -461,7 +461,7 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             a = b = DBL_MIN;
             operation = 0;
-            input = FALSE;
+            input = TRUE;
             input_operation = FALSE;
             point_entered = FALSE;
             ZeroMemory(sz_display, SIZE);
