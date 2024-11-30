@@ -487,10 +487,10 @@ INT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             input = FALSE;
             switch (operation)
             {
-            case IDC_BUTTON_PLUS:	a += b;	break;
-            case IDC_BUTTON_MINUS:	a -= b;	break;
-            case IDC_BUTTON_ASTER:	a *= b;	break;
-            case IDC_BUTTON_SLASH:	a /= b;	break;
+            case IDC_BUTTON_PLUS:    a += b;    break;
+            case IDC_BUTTON_MINUS:    a -= b;    break;
+            case IDC_BUTTON_ASTER:    a *= b;    break;
+            case IDC_BUTTON_SLASH:    a /= b;    break;
             }
             //input = FALSE;
             input_operation = FALSE;
