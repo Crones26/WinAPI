@@ -509,7 +509,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 	}
 	break;
-	////////////////////////////
+
 	case WM_DESTROY:
 	{
 		HWND hEdit = GetDlgItem(hwnd, IDC_EDIT_DISPLAY);
