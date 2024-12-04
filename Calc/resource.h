@@ -21,14 +21,11 @@
 #define IDC_BUTTON_7				1007
 #define IDC_BUTTON_8				1008
 #define IDC_BUTTON_9				1009
-
 #define IDC_BUTTON_POINT			1010
-
 #define IDC_BUTTON_PLUS				1011
 #define IDC_BUTTON_MINUS			1012
 #define IDC_BUTTON_ASTER			1013
 #define IDC_BUTTON_SLASH			1014
-
 #define IDC_BUTTON_BSP				1015
 #define IDC_BUTTON_CLR				1016
 #define IDC_BUTTON_EQUAL			1017
