@@ -129,14 +129,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			NULL
 		);
 		AddFontResourceEx("Fonts\\Calculator.ttf", FR_PRIVATE, 0);
-		HINSTANCE hInstFont = LoadLibrary("..\\Debug\\FontOnlyDLL.dll"); // . . выход в родительский каталог.
+		HINSTANCE hInstFont = LoadLibrary("..\\Debug\\FontOnlyDLL.dll");
 		HRSRC hFontRes = FindResource(hInstFont, MAKEINTRESOURCE(99), "BINARY");
 		HGLOBAL hFntMem = LoadResource(hInstFont, hFontRes);
-		VOID* fntData = LockResource (hFntMem);
+		VOID* fntData = LockResource(hFntMem);
 		DWORD nFonts = 0;
 		DWORD len = SizeofResource(hInstFont, hFontRes);
 		hMyFont = AddFontMemResourceEx(fntData, len, nullptr, &nFonts);
-
 		HFONT hFont = CreateFont
 		(
 			g_i_FONT_HEIGHT, g_i_FONT_WIDTH,
@@ -151,8 +150,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			CLIP_TT_ALWAYS,
 			ANTIALIASED_QUALITY,
 			FF_DONTCARE,
-			//"Calculator"
-			"Digital-7"
+			//"Terminator Two"
+			//"Digital-7"
+			"Calculator"
 		);
 		SendMessage(hEdit, WM_SETFONT, (WPARAM)hFont, TRUE);
 		FreeLibrary(hInstFont);
