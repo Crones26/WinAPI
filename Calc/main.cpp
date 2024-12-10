@@ -151,7 +151,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			ANTIALIASED_QUALITY,
 			FF_DONTCARE,
 			//"Terminator Two"
-			//"Digital-7"
 			"Calculator"
 		);
 		SendMessage(hEdit, WM_SETFONT, (WPARAM)hFont, TRUE);
