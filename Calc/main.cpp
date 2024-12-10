@@ -127,7 +127,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			(HMENU)IDC_EDIT_DISPLAY,
 			GetModuleHandle(NULL),
 			NULL
-		);
+		); 
 		AddFontResourceEx("Fonts\\Calculator.ttf", FR_PRIVATE, 0);
 		HINSTANCE hInstFont = LoadLibrary("..\\Debug\\FontOnlyDLL.dll");
 		HRSRC hFontRes = FindResource(hInstFont, MAKEINTRESOURCE(99), "BINARY");
